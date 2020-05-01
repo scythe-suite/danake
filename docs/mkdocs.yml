@@ -1,0 +1,53 @@
+site_name: ∂anake
+
+site_author: Massimo Santini
+
+copyright: "&copy; Massimo Santini, 2020"
+
+docs_dir: src
+
+theme:
+  name: material
+  icon:
+    logo: material/circle-multiple
+  palette:
+    primary: 'blue grey'
+  font:
+    text: 'Ubuntu'
+    code: 'Ubuntu mono'
+  language: 'en'
+  use_directory_urls: true
+
+repo_name: 'scythe-suite/danake'
+repo_url: 'https://github.com/scythe-suite/danake'
+edit_uri: ''
+
+extra:
+  search:
+    lang:
+      - 'en'
+  social:
+  - icon: 'fontawesome/brands/github-alt'
+    link: 'https://github.com/mapio'
+  - icon: 'fontawesome/brands/twitter'
+    link: 'https://twitter.com/mapio'
+  - icon: 'fontawesome/brands/linkedin'
+    link: 'https://www.linkedin.com/in/massimosantini/'
+
+markdown_extensions: #  https://python-markdown.github.io/extensions/
+  - toc:
+        permalink: "#"
+        toc_depth: 2-6
+  - admonition
+  - pymdownx.details
+  - pymdownx.extra
+  - pymdownx.inlinehilite
+  - pymdownx.superfences
+
+extra_css:
+  - css/extra.css
+
+nav:
+  - index.md
+  - Design documents:
+    - design/auth.md
