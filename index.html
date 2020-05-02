@@ -255,17 +255,17 @@
                 
                 
                 <h1>Introduction</h1>
-<p>The <em>∂anake</em> component will become a part of the <a href="https://github.com/scythe-suite/">scythe-suite</a> allowing remote authenticated and isolated execution of a development environment.</p>
-<p>From the user point of view, <em>∂anake</em> will be a web application:</p>
+<p>The <em>∂anake</em> component is part of the <a href="https://github.com/scythe-suite/">scythe-suite</a> and allows remote, authenticated, and isolated execution of a development environment.</p>
+<p>From the student point of view, <em>∂anake</em> is web application:</p>
 <ul>
 <li>
-<p>the authentication will require the student to upload a snapshot of her face taken beside a photo ID; the picture will be obtained using the widely supported <a href="https://developer.mozilla.org/en-US/docs/Web/API/MediaDevices">MediaDevices</a> Web API;</p>
+<p>the authentication requires the student to upload a picture of her face, taken beside a photo ID; such picture will be obtained using the widely supported <a href="https://developer.mozilla.org/en-US/docs/Web/API/MediaDevices">MediaDevices</a> Web API;</p>
 </li>
 <li>
-<p>the development environment will be based on <a href="https://github.com/cdr/code-server">code-server</a>, a "version" of <a href="https://code.visualstudio.com/">Visual Studio Code</a> that runs in the browser.</p>
+<p>the development environment is based on <a href="https://github.com/cdr/code-server">code-server</a>, a "version" of <a href="https://code.visualstudio.com/">Visual Studio Code</a> that runs in the browser.</p>
 </li>
 </ul>
-<p>The backend will be based on a new application handling the authentication (similar to <a href="https://github.com/mapio/tau">𝜏</a>) and <a href="https://www.docker.com/">Docker</a> running a set of micro-services, accessible through a front facing <a href="https://www.nginx.com/">Nginx</a> reverse proxy.</p>
+<p>The backend consists of a novel application handling the authentication (similar to <a href="https://github.com/mapio/tau">𝜏</a>) and a <a href="https://www.docker.com/">Docker</a> <em>swarm</em> running a set of micro-services, accessible through a front facing <a href="https://www.nginx.com/">Nginx</a> reverse proxy.</p>
                 
               
               
@@ -356,6 +356,8 @@
           }, typeof search !== "undefined" && search)
         })
       </script>
+      
+        <script src="https://unpkg.com/mermaid@8.5.0/dist/mermaid.min.js"></script>
       
     
   </body>
