@@ -1,4 +1,6 @@
 .envrc
 docs/site/
 reverse-proxy/confs/certs/
+reverse-proxy/confs/cookie_map.tsv
 reverse-proxy/letsencrypt/
+reverse-proxy/logs/
