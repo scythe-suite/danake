@@ -1,13 +1,17 @@
 #!/bin/bash
 
+HOMES_DIR=$(pwd)/homes
+
 name="$1"
 if [ -z $name ]; then
   echo "Specify the name…"
   exit
 fi
 
-mkdir "home-$name"
+HOME_DIR="${HOMES_DIR}/${name}"
+
+mkdir -p "$HOME_DIR"
 
 docker run --rm --name "codeserver-$name" --network backend \
-  -v "$(pwd)/home-$name":/home/coder/project remote \
+  -v "$HOME_DIR":/home/coder/project remote \
   code-server  --bind-addr 0.0.0.0:8080 --auth none /home/coder/
