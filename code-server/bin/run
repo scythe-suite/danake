@@ -1,0 +1,13 @@
+#!/bin/bash
+
+name="$1"
+if [ -z $name ]; then
+  echo "Specify the name…"
+  exit
+fi
+
+mkdir "home-$name"
+
+docker run --rm --name "codeserver-$name" --network backend \
+  -v "$(pwd)/home-$name":/home/coder/project remote \
+  code-server  --bind-addr 0.0.0.0:8080 --auth none /home/coder/
