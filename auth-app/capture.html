@@ -13,19 +13,21 @@
 		<div id="container">
 			<video autoplay></video>
 			<img id="screenshot-img">
-			<p><button id="start-capture-button">Turn on camera</button></p>
-			<p><button id="screenshot-button" disabled>Take picture</button></p>
-			<p><button id="stop-capture-button" disabled>Turn off camera</button></p>
+			<p><button id="start-capture">Turn on camera</button></p>
+			<p><button id="screenshot" disabled>Take picture</button></p>
+			<p><button id="submit" disabled>Submit picture</button></p>
+			<p><button id="stop-capture" disabled>Turn off camera</button></p>
 
 			<script>
 				const constraints = {
 					  video: true
 				};
 
-				const startCaptureButton = document.querySelector('#start-capture-button');
-				const stopCaptureButton = document.querySelector('#stop-capture-button');
-				const screenshotButton = document.querySelector('#screenshot-button');
-				const img = document.querySelector('#container img');
+				const startCaptureButton = document.querySelector('#start-capture');
+				const stopCaptureButton = document.querySelector('#stop-capture');
+				const submitButton = document.querySelector('#submit');
+				const screenshotButton = document.querySelector('#screenshot');
+				const img = document.querySelector('#container #screenshot-img');
 				const video = document.querySelector('#container video');
 
 				const canvas = document.createElement('canvas');
@@ -48,7 +50,7 @@
 					});
 					video.srcObject = null;
 
-					screenshotButton.disabled = stopCaptureButton.disabled = true;
+					screenshotButton.disabled = submitButton.disabled = stopCaptureButton.disabled = true;
 					startCaptureButton.disabled = false;
 				};
 
@@ -58,7 +60,23 @@
 					canvas.getContext('2d').drawImage(video, 0, 0);
 					// Other browsers will fall back to image/png
 					img.src = canvas.toDataURL('image/webp');
+					submitButton.disabled = false;
 				};
+
+				submitButton.onclick = function() {
+					if (img.src) {
+						var b64Image = img.src;
+
+						var formData = new FormData();
+						formData.append("image", new Blob([ b64Image ], {type: "image/webp"}));
+
+						var xhr = new XMLHttpRequest();
+						xhr.open("POST", "http://localhost:8000/", true);
+						xhr.send(formData);
+					}
+					img.src = "";
+					submitButton.disabled = true;
+				}
 
 				function handleError(error) {
 					  console.error('Error: ', error);
