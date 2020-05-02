@@ -47,6 +47,9 @@ markdown_extensions: #  https://python-markdown.github.io/extensions/
 extra_css:
   - css/extra.css
 
+extra_javascript:
+  - https://unpkg.com/mermaid@8.5.0/dist/mermaid.min.js
+
 nav:
   - index.md
   - Design documents:
