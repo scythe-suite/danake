@@ -1,5 +1,7 @@
 # Introduction
 
+<img align="right" style="margin-left: 1em;" src="img/logo.png">
+
 The *∂anake* component is part of the [scythe-suite](https://github.com/scythe-suite/) and allows remote, authenticated, and isolated execution of a development environment.
 
 From the student point of view, *∂anake* is web application:
