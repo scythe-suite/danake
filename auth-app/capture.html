@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+
+<!--
+	Example based on https://www.html5rocks.com/en/tutorials/getusermedia/intro/
+-->
+
+<html>
+	<head>
+		<meta charset="utf-8">
+	</head>
+
+	<body>
+		<div id="container">
+			<video autoplay></video>
+			<img id="screenshot-img">
+			<p><button id="start-capture-button">Turn on camera</button></p>
+			<p><button id="screenshot-button" disabled>Take picture</button></p>
+			<p><button id="stop-capture-button" disabled>Turn off camera</button></p>
+
+			<script>
+				const constraints = {
+					  video: true
+				};
+
+				const startCaptureButton = document.querySelector('#start-capture-button');
+				const stopCaptureButton = document.querySelector('#stop-capture-button');
+				const screenshotButton = document.querySelector('#screenshot-button');
+				const img = document.querySelector('#container img');
+				const video = document.querySelector('#container video');
+
+				const canvas = document.createElement('canvas');
+
+				startCaptureButton.onclick = function() {
+					if (!video.strObject) {
+						navigator.mediaDevices
+							.getUserMedia(constraints)
+							.then((stream) => {video.srcObject = stream})
+							.catch(handleError);
+
+						startCaptureButton.disabled = true;
+						screenshotButton.disabled = stopCaptureButton.disabled = false;
+					}
+				};
+
+				stopCaptureButton.onclick = function() {
+					video.srcObject.getTracks().forEach(function(track) {
+						track.stop();
+					});
+					video.srcObject = null;
+
+					screenshotButton.disabled = stopCaptureButton.disabled = true;
+					startCaptureButton.disabled = false;
+				};
+
+				screenshotButton.onclick = video.onclick = function() {
+					canvas.width = video.videoWidth;
+					canvas.height = video.videoHeight;
+					canvas.getContext('2d').drawImage(video, 0, 0);
+					// Other browsers will fall back to image/png
+					img.src = canvas.toDataURL('image/webp');
+				};
+
+				function handleError(error) {
+					  console.error('Error: ', error);
+				}
+			</script>
+		</div>
+	</body>
+</html>
