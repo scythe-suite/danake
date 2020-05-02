@@ -65,3 +65,24 @@ sequenceDiagram
   A -->> S: set cookie and redirect
   S ->> C: sends cookie
 </div>
+
+It must be clear that, since sharing the *routing cookie* among students is not
+impossible, **the present flow is quite weak**: anyone student with the same
+cookie will be routed to the same development environment.
+
+As a form of mitigation, the *reverse proxy* requires an HTTPS connection and
+keeps a timed log of *routing cookie* and *SSL Session ID* pairs it handles (see
+[RFC 246](https://tools.ietf.org/html/rfc5246) for a description of the TLS
+Handshake and Session ID); this means that it will be very hard to conceal
+*routing cookie* sharing among different browsers. Another possible mitigation
+would be to restrict access to the *code server* from a single IP (the one of
+the first connection); given the instability of consumer networks (that moreover
+are often NAT-ed), this alternative seems, if more secure, less viable.
+
+The collected pictures will be used by a human verifier during the exam, or
+shortly after its end, to identify the students; immediately after the
+identification, the pictures can be discarder (for privacy compliance). Given
+that the *routing cookie* can only be obtained legally in the instant the
+picture is shot, the present flow ensures that, in case of cookie sharing, the
+identified student can't repudiate to have illegally offered her own credentials
+to another student.
