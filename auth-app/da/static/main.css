@@ -1,0 +1,16 @@
+.l-box {
+    padding: 2em;
+}
+
+.pure-alert  {
+    border-radius: .8em;
+}
+
+a {
+    font-variant: small-caps;
+}
+
+a:hover {
+    opacity: 50%;
+    transition: opacity 1s;
+}
