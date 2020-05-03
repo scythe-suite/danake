@@ -1,0 +1,112 @@
+version: "3.8"
+services:
+
+  reverse-proxy:
+    image: "127.0.0.1:5000/danake/reverse-proxy:${DANAKE_VERSION:-latest}"
+    build:
+      context: ./docker/reverse-proxy
+    ports:
+      - "80:80"
+      - "443:443"
+    deploy:
+      placement:
+        constraints:
+          - "node.role==manager"
+    configs:
+      - cookie_map.tsv
+    secrets:
+      - fullchain.pem
+      - privkey.pem
+      - dhparam.pem
+    volumes:
+      - type: bind
+        source: ./data/logs
+        target: /logs
+
+  auth-app:
+    image: "127.0.0.1:5000/danake/auth-app:${DANAKE_VERSION:-latest}"
+    build:
+      context: ./docker/auth-app
+    deploy:
+      placement:
+        constraints:
+          - "node.role==manager"
+    configs:
+      - uid2info.tsv
+    secrets:
+      - source: auth-app-config.py
+        target: /auth-app-config.py
+    volumes:
+      - type: bind
+        source: ./data/pictures
+        target: /pictures
+
+  code-server:
+    image: "127.0.0.1:5000/danake/code-server:${DANAKE_VERSION:-latest}"
+    build:
+      context: ./docker/code-server
+  visualizer:
+    image: dockersamples/visualizer:stable
+    ports:
+      - "8080:8080"
+    stop_grace_period: 1m30s
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock"
+    deploy:
+      placement:
+        constraints:
+          - "node.role==manager"
+
+
+
+  agent:
+    image: portainer/agent
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /var/lib/docker/volumes:/var/lib/docker/volumes
+    networks:
+      - agent_network
+    deploy:
+      mode: global
+      placement:
+        constraints: [node.platform.os == linux]
+
+  portainer:
+    image: portainer/portainer
+    command: -H tcp://tasks.agent:9001 --tlsskipverify
+    ports:
+      - "9000:9000"
+      - "8000:8000"
+    volumes:
+      - portainer_data:/data
+    networks:
+      - agent_network
+    deploy:
+      mode: replicated
+      replicas: 1
+      placement:
+        constraints: [node.role == manager]
+
+configs:
+  cookie_map.tsv:
+    file: ./confs/reverse-proxy/cookie_map.tsv
+  uid2info.tsv:
+    file: ./confs/auth-app/uid2info.tsv
+
+secrets:
+  fullchain.pem:
+    file: ./confs/reverse-proxy/certs/fullchain.pem
+  privkey.pem:
+    file: ./confs/reverse-proxy/certs/privkey.pem
+  dhparam.pem:
+    file: ./confs/reverse-proxy/dhparam.pem
+  auth-app-config.py:
+    file: ./confs/auth-app/conf.py
+
+networks:
+  agent_network:
+    driver: overlay
+    attachable: true
+
+volumes:
+  portainer_data:

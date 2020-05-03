@@ -1,12 +1,9 @@
 #!/bin/bash -e
 
-rm -rf da run.py
-rsync -pav ../run.py ../da .
-
-export VERSION=$(grep __version__ ../da/__init__.py | cut -d= -f2 | cut -d"'" -f2)
+export VERSION=$(grep __version__ ../../auth-app/da/__init__.py | cut -d= -f2 | cut -d"'" -f2)
 export OWNER=scythe-suite
 export REPO=danake
-export IMAGE=auth-app
+export IMAGE=reverse-proxy
 
 echo "Build image id:"
 docker build -qt $REPO/$IMAGE:$VERSION .

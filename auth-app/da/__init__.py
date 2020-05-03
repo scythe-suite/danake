@@ -14,15 +14,15 @@ app.config.from_mapping(
     SECRET_KEY = 'dev',
     MAX_CONTENT_LENGTH = 3 * 1024 * 1024,
     PICTURES_FOLDER = str(Path(app.instance_path) / 'pictures'),
+    UID2INFO_PATH = str(Path(app.instance_path) / 'uid2info.tsv'),
     TOKEN_DURATION = 24 * 60 * 60 * 5
 )
 app.config.from_pyfile('config.py', silent = True)
+app.config.from_pyfile('/auth-app-config.py', silent = True)
 
 USTS = URLSafeTimedSerializer(app.config['SECRET_KEY'])
 
-UID2INFO = dict(reader(
-    (Path(app.instance_path) / 'uid2info.tsv').open('r'), delimiter = '\t')
-)
+UID2INFO = dict(reader(Path(app.config['UID2INFO_PATH']).open('r'), delimiter = '\t'))
 
 Path(app.instance_path).mkdir(exist_ok = True)
 PICTURES_FOLDER_PATH = Path(app.config['PICTURES_FOLDER']).absolute()

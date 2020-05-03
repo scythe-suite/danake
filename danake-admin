@@ -1,0 +1,41 @@
+#!/bin/bash
+
+export ADMIN_COMMAND="$1"
+shift
+
+export DANAKE_VERSION="0.1.0-beta"
+
+case "$ADMIN_COMMAND" in
+
+    start)
+      docker stack deploy -c danake.yml danake
+    ;;
+
+    stop)
+      docker stack rm danake
+    ;;
+
+    build)
+      docker-compose -f danake.yml build
+      docker-compose -f danake.yml push
+    ;;
+
+    setup)
+        # dids=$(docker ps -a --filter label=danake=reverse-proxy --format '{{.ID}}')
+        # if [ ! -z "$dids" ]; then
+        #     echo "danake-admin: reverse-proxy: killing old reverse-proxy instances..." $(docker rm -f $dids) >&2
+        # fi
+        if ! docker service ps registry >/dev/null; then
+          echo "danake-admin: setup: starting registry..." >&2
+          docker service create --name registry --publish published=5000,target=5000 registry:2
+        fi
+        for img in reverse-proxy auth-app; do
+          docker tag danake/$img:latest 127.0.0.1:5000/danake/$img:latest
+          docker push 127.0.0.1:5000/danake/$img:latest
+        done
+    ;;
+
+    *)
+        echo "danake-admin: command '$ADMIN_COMMAND' not recognized" >&2
+        exit 1
+esac
