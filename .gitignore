@@ -4,3 +4,6 @@ reverse-proxy/confs/certs/
 reverse-proxy/confs/cookie_map.tsv
 reverse-proxy/letsencrypt/
 reverse-proxy/logs/
+auth-app/docker/da/
+auth-app/docker/run.py
+auth-app/instance/

@@ -1,0 +1,15 @@
+#!/bin/bash -e
+
+rm -rf da run.py
+rsync -pav ../run.py ../da .
+
+export VERSION=$(grep __version__ ../da/__init__.py | cut -d= -f2 | cut -d"'" -f2)
+export OWNER=scythe-suite
+export REPO=danake
+export IMAGE=auth-app
+
+echo "Build image id:"
+docker build -qt $REPO/$IMAGE:$VERSION .
+docker tag $REPO/$IMAGE:$VERSION $REPO/$IMAGE:latest
+docker tag $REPO/$IMAGE:$VERSION docker.pkg.github.com/$OWNER/$REPO/$IMAGE:$VERSION
+docker tag $REPO/$IMAGE:$VERSION docker.pkg.github.com/$OWNER/$REPO/$IMAGE:latest
