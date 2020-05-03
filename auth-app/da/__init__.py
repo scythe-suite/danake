@@ -6,6 +6,8 @@ import click
 from flask import Flask, abort, jsonify, redirect, render_template, request, url_for
 from itsdangerous import BadSignature, SignatureExpired, URLSafeTimedSerializer
 
+__version__ = '0.1.0-beta'
+
 app = Flask(__name__, instance_relative_config = True)
 app.config.from_mapping(
     MAX_AGE = 60 * 60 * 4, # 4h
@@ -79,7 +81,7 @@ def index(token = None):
                   return redirect('/cs/')
               else:
                   raise
-          fobj = os.fdopen(fd)
+          fobj = os.fdopen(fd, 'wb')
           try:
               file.save(fobj)
               fobj.close()
