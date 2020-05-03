@@ -2,6 +2,8 @@
 
 export ADMIN_COMMAND="$1"
 shift
+#docker tag $REPO/$IMAGE:$VERSION docker.pkg.github.com/$OWNER/$REPO/$IMAGE:$VERSION
+#docker tag $REPO/$IMAGE:$VERSION docker.pkg.github.com/$OWNER/$REPO/$IMAGE:latest
 
 export DANAKE_VERSION="0.1.0-beta"
 
@@ -16,18 +18,15 @@ case "$ADMIN_COMMAND" in
     ;;
 
     build)
-      docker-compose -f danake.yml build
-      docker-compose -f danake.yml push
+      docker-compose build
+      docker-compose push
     ;;
 
     setup)
-        # dids=$(docker ps -a --filter label=danake=reverse-proxy --format '{{.ID}}')
-        # if [ ! -z "$dids" ]; then
-        #     echo "danake-admin: reverse-proxy: killing old reverse-proxy instances..." $(docker rm -f $dids) >&2
-        # fi
+        mkdir -p ./data/{logs,pictures,registry}
         if ! docker service ps registry >/dev/null; then
           echo "danake-admin: setup: starting registry..." >&2
-          docker service create --name registry --publish published=5000,target=5000 registry:2
+          docker service create --mount type=bind,source=$(pwd)/data/registry,target=/var/lib/registry --name registry --publish published=5000,target=5000 registry:2
         fi
         for img in reverse-proxy auth-app; do
           docker tag danake/$img:latest 127.0.0.1:5000/danake/$img:latest
