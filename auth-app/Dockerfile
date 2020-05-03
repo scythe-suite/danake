@@ -1,4 +1,4 @@
-FROM alpine:3.10
+FROM alpine:3.11
 LABEL maintainer="Massimo Santini santini@di.unimi.it"
 RUN apk add --no-cache --update python3; \
     python3 -m pip install flask gunicorn
