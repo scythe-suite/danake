@@ -10,28 +10,22 @@ export DANAKE_VERSION="0.1.0-beta"
 case "$ADMIN_COMMAND" in
 
     start)
+      #docker stack deploy -c base.yml base
       docker stack deploy -c danake.yml danake
     ;;
 
     stop)
       docker stack rm danake
+      #docker stack rm base
     ;;
 
     build)
-      docker-compose build
-      docker-compose push
+      docker-compose -f build.yml build
+      docker-compose -f build.yml push
     ;;
 
     setup)
         mkdir -p ./data/{logs,pictures,registry}
-        if ! docker service ps registry >/dev/null; then
-          echo "danake-admin: setup: starting registry..." >&2
-          docker service create --mount type=bind,source=$(pwd)/data/registry,target=/var/lib/registry --name registry --publish published=5000,target=5000 registry:2
-        fi
-        for img in reverse-proxy auth-app; do
-          docker tag danake/$img:latest 127.0.0.1:5000/danake/$img:latest
-          docker push 127.0.0.1:5000/danake/$img:latest
-        done
     ;;
 
     *)
