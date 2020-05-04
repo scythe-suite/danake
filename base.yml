@@ -7,19 +7,22 @@ services:
       - type: bind
         source: ./data/registry
         target: /var/lib/registry
+    deploy:
+      mode: replicated
+      replicas: 1
     ports:
       - "5000:5000"
 
-  visualizer:
-    image: dockersamples/visualizer:stable
-    ports:
-      - "8080:8080"
-    stop_grace_period: 1m30s
-    volumes:
-      - "/var/run/docker.sock:/var/run/docker.sock"
-    deploy:
-      placement:
-        constraints: [node.role==manager]
+  # visualizer:
+  #   image: dockersamples/visualizer:stable
+  #   ports:
+  #     - "8080:8080"
+  #   stop_grace_period: 1m30s
+  #   volumes:
+  #     - "/var/run/docker.sock:/var/run/docker.sock"
+  #   deploy:
+  #     placement:
+  #       constraints: [node.role==manager]
 
   agent:
     image: portainer/agent
