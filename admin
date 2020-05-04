@@ -20,7 +20,7 @@ case "$ADMIN_COMMAND" in
     ;;
 
     setup)
-        mkdir -p ./data/{logs,pictures,registry}
+        mkdir -p ./data/{logs,pictures}
     ;;
 
     base-start)

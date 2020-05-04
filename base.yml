@@ -3,54 +3,55 @@ services:
 
   registry:
     image: registry:2
-    volumes:
-      - type: bind
-        source: ./data/registry
-        target: /var/lib/registry
     deploy:
       mode: replicated
       replicas: 1
     ports:
-      - "5000:5000"
-
-  # visualizer:
-  #   image: dockersamples/visualizer:stable
-  #   ports:
-  #     - "8080:8080"
-  #   stop_grace_period: 1m30s
-  #   volumes:
-  #     - "/var/run/docker.sock:/var/run/docker.sock"
-  #   deploy:
-  #     placement:
-  #       constraints: [node.role==manager]
+      - target: 5000
+        published: 5000
+    volumes:
+      - type: volume
+        source: registry_data
+        target: /var/lib/registry
 
   agent:
     image: portainer/agent
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-      - /var/lib/docker/volumes:/var/lib/docker/volumes
-    networks:
-      - agent_network
     deploy:
       mode: global
       placement:
         constraints: [node.platform.os == linux]
+    volumes:
+      - type: bind
+        source: /var/run/docker.sock
+        target: /var/run/docker.sock
+      - type: bind
+        source: /var/lib/docker/volumes
+        target: /var/lib/docker/volumes
+    networks:
+      - agent_network
 
   portainer:
     image: portainer/portainer
-    command: -H tcp://tasks.agent:9001 --tlsskipverify
-    ports:
-      - "9000:9000"
-      - "8000:8000"
-    volumes:
-      - portainer_data:/data
-    networks:
-      - agent_network
+    command: -H tcp://tasks.agent:9001 --tlsskipverify --ssl --sslcert /run/secrets/fullchain.pem --sslkey /run/secrets/privkey.pem
     deploy:
       mode: replicated
       replicas: 1
       placement:
         constraints: [node.role == manager]
+    ports:
+      - target: 8000 # ssh tunnel
+        published: 8000
+      - target: 9000
+        published: 9000
+    volumes:
+      - type: volume
+        source: portainer_data
+        target: /data
+    networks:
+      - agent_network
+    secrets:
+      - fullchain.pem
+      - privkey.pem
 
 networks:
   agent_network:
@@ -59,3 +60,10 @@ networks:
 
 volumes:
   portainer_data:
+  registry_data:
+
+secrets:
+  fullchain.pem:
+    file: "${DANAKE_CONFS}/certs/fullchain.pem"
+  privkey.pem:
+    file: "${DANAKE_CONFS}/certs/privkey.pem"
