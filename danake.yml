@@ -3,16 +3,16 @@ services:
 
   reverse-proxy:
     image: "127.0.0.1:5000/danake/reverse-proxy:${DANAKE_VERSION:-latest}"
-    ports:
-      - "80:80"
-      - "443:443"
     deploy:
+      mode: replicated
+      replicas: 1
       placement:
         constraints: [node.role == manager]
-    secrets:
-      - fullchain.pem
-      - privkey.pem
-      - dhparam.pem
+    ports:
+      - target: 80
+        published: 80
+      - target: 443
+        published: 443
     volumes:
       - type: bind
         source: "${DANAKE_DATA}/logs"
@@ -20,6 +20,10 @@ services:
       - type: bind
         source: "${DANAKE_CONFS}/cookie2ip.tsv"
         target: /cookie2ip.tsv
+    secrets:
+      - fullchain.pem
+      - privkey.pem
+      - dhparam.pem
 
   auth-app:
     image: "127.0.0.1:5000/danake/auth-app:${DANAKE_VERSION:-latest}"
