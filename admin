@@ -5,9 +5,11 @@ shift
 #docker tag $REPO/$IMAGE:$VERSION docker.pkg.github.com/$OWNER/$REPO/$IMAGE:$VERSION
 #docker tag $REPO/$IMAGE:$VERSION docker.pkg.github.com/$OWNER/$REPO/$IMAGE:latest
 
+export DANAKE_NETWORK="159.149.129.96/27"
 export DANAKE_VERSION="0.1.0-beta"
 export DANAKE_CONFS="./confs"
 export DANAKE_DATA="./data"
+export DANAKE_UID_NUM=$(wc -l confs/uid2info.tsv | cut -d' ' -f1)
 
 case "$ADMIN_COMMAND" in
 
@@ -41,6 +43,13 @@ case "$ADMIN_COMMAND" in
 
     token)
         docker run --rm -it -v $(pwd)/confs/uid2info.tsv:/app/instance/uid2info.tsv:ro -v $(pwd)/confs/uid2cookie.tsv:/app/instance/uid2cookie.tsv:ro  127.0.0.1:5000/danake/auth-app:0.1.0-beta flask get-token "$1"
+    ;;
+
+    ufw)
+        sudo ufw allow proto tcp from ${DANAKE_NETWORK} to any port 2377
+        sudo ufw allow proto tcp from ${DANAKE_NETWORK} to any port 7946
+        sudo ufw allow proto udp from ${DANAKE_NETWORK} to any port 7946
+        sudo ufw allow proto udp from ${DANAKE_NETWORK} to any port 4789
     ;;
 
     *)
