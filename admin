@@ -16,8 +16,11 @@ case "$ADMIN_COMMAND" in
     build)
       for img in cli reverse-proxy auth-app code-server; do
         docker build $img \
+          --tag "danake/$img:latest" \
           --tag "danake/$img:$DANAKE_VERSION" \
+          --tag "127.0.0.1:5000/danake/$img:latest" \
           --tag "127.0.0.1:5000/danake/$img:$DANAKE_VERSION" \
+          --tag "docker.pkg.github.com/scythe-suite/danake/$img:latest" \
           --tag "docker.pkg.github.com/scythe-suite/danake/$img:$DANAKE_VERSION"
       done
     ;;
@@ -25,6 +28,7 @@ case "$ADMIN_COMMAND" in
     push-local)
       for img in cli reverse-proxy auth-app code-server; do
         docker push "127.0.0.1:5000/danake/$img:$DANAKE_VERSION"
+        docker push "127.0.0.1:5000/danake/$img:latest"
       done
     ;;
 
@@ -46,12 +50,30 @@ case "$ADMIN_COMMAND" in
       docker stack rm base
     ;;
 
+    gencookies)
+      docker run --rm -v $(realpath "$DANAKE_CONFS"):/confs danake/cli:$DANAKE_VERSION
+    ;;
+
     start)
       docker stack deploy -c danake.yml danake
     ;;
 
     stop)
       docker stack rm danake
+    ;;
+
+    start-cs)
+      docker run --rm -v $(realpath "$DANAKE_CONFS"):/confs \
+        --env DOCKER_TLS_VERIFY="$DOCKER_TLS_VERIFY" \
+        --env DOCKER_HOST="$DOCKER_HOST" \
+        --env DOCKER_CERT_PATH=/certs \
+        -v $DOCKER_CERT_PATH:/certs \
+        --env DOCKER_MACHINE_NAME="$DOCKER_MACHINE_NAME" \
+        danake/cli:$DANAKE_VERSION deploycs
+    ;;
+
+    stop-cs)
+      docker service rm $(docker service ls -q --filter label=danake=code-server)
     ;;
 
     token)

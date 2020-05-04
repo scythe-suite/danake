@@ -18,8 +18,8 @@ services:
         source: "${DANAKE_DATA}/logs"
         target: /logs
       - type: bind
-        source: "${DANAKE_CONFS}/cookie2ip.tsv"
-        target: /cookie2ip.tsv
+        source: "${DANAKE_CONFS}/cookie2uid.tsv"
+        target: /cookie2uid.tsv
     networks:
       - backend_network
     secrets:
@@ -42,8 +42,8 @@ services:
         source: "${DANAKE_CONFS}/uid2info.tsv"
         target: /uid2info.tsv
       - type: bind
-        source: "${DANAKE_CONFS}/uid2cookie.tsv"
-        target: /uid2cookie.tsv
+        source: "${DANAKE_CONFS}/cookie2uid.tsv"
+        target: /cookie2uid.tsv
     networks:
       - backend_network
     secrets:

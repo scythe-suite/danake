@@ -15,7 +15,7 @@ app.config.from_mapping(
     MAX_CONTENT_LENGTH = 3 * 1024 * 1024,
     PICTURES_FOLDER = str(Path(app.instance_path) / 'pictures'),
     UID2INFO_PATH = str(Path(app.instance_path) / 'uid2info.tsv'),
-    UID2COOKIE_PATH = str(Path(app.instance_path) / 'uid2cookie.tsv'),
+    COOKIE2UID_PATH = str(Path(app.instance_path) / 'cookie2uid.tsv'),
     TOKEN_DURATION = 24 * 60 * 60 * 5
 )
 app.config.from_pyfile('config.py', silent = True)
@@ -23,8 +23,12 @@ app.config.from_pyfile('/config.py', silent = True)
 
 USTS = URLSafeTimedSerializer(app.config['SECRET_KEY'])
 
-UID2INFO = dict(reader(Path(app.config['UID2INFO_PATH']).open('r'), delimiter = '\t'))
-UID2COOKIE = dict(reader(Path(app.config['UID2COOKIE_PATH']).open('r'), delimiter = '\t'))
+UID2INFO = dict(
+  reader(Path(app.config['UID2INFO_PATH']).open('r'), delimiter = '\t')
+)
+UID2COOKIE = dict(
+  (uid[:-1], cookie) for cookie, uid in reader(Path(app.config['COOKIE2UID_PATH']).open('r'), delimiter = '\t')
+)
 
 Path(app.instance_path).mkdir(exist_ok = True)
 PICTURES_FOLDER_PATH = Path(app.config['PICTURES_FOLDER']).absolute()
