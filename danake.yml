@@ -8,50 +8,50 @@ services:
       - "443:443"
     deploy:
       placement:
-        constraints:
-          - "node.role==manager"
+        constraints: [node.role == manager]
     secrets:
       - fullchain.pem
       - privkey.pem
       - dhparam.pem
     volumes:
       - type: bind
-        source: ./data/logs
+        source: "${DANAKE_DATA}/logs"
         target: /logs
       - type: bind
-        source: ./confs/reverse-proxy/cookie_map.tsv
-        target: /cookie_map.tsv
+        source: "${DANAKE_CONFS}/cookie2ip.tsv"
+        target: /cookie2ip.tsv
 
   auth-app:
     image: "127.0.0.1:5000/danake/auth-app:${DANAKE_VERSION:-latest}"
     deploy:
+      mode: replicated
+      replicas: 1
       placement:
-        constraints:
-          - "node.role==manager"
-    configs:
-      - uid2info.tsv
+        constraints: [node.role == manager]
     secrets:
-      - source: auth-app-config.py
-        target: /auth-app-config.py
+      - source: auth-config.py
+        target: /config.py
     volumes:
       - type: bind
-        source: ./data/pictures
+        source: "${DANAKE_DATA}/pictures"
         target: /pictures
+      - type: bind
+        source: "${DANAKE_CONFS}/uid2info.tsv"
+        target: /uid2info.tsv
+      - type: bind
+        source: "${DANAKE_CONFS}/uid2cookie.tsv"
+        target: /uid2cookie.tsv
 
   code-server:
     image: "127.0.0.1:5000/danake/code-server:${DANAKE_VERSION:-latest}"
 
-configs:
-  uid2info.tsv:
-    file: ./confs/auth-app/uid2info.tsv
-
 secrets:
   fullchain.pem:
-    file: ./confs/reverse-proxy/certs/fullchain.pem
+    file: "${DANAKE_CONFS}/certs/fullchain.pem"
   privkey.pem:
-    file: ./confs/reverse-proxy/certs/privkey.pem
+    file: "${DANAKE_CONFS}/certs/privkey.pem"
   dhparam.pem:
-    file: ./confs/reverse-proxy/dhparam.pem
-  auth-app-config.py:
-    file: ./confs/auth-app/conf.py
+    file: "${DANAKE_CONFS}/certs/dhparam.pem"
+  auth-config.py:
+    file: "${DANAKE_CONFS}/auth-config.py"
 

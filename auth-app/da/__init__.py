@@ -15,14 +15,16 @@ app.config.from_mapping(
     MAX_CONTENT_LENGTH = 3 * 1024 * 1024,
     PICTURES_FOLDER = str(Path(app.instance_path) / 'pictures'),
     UID2INFO_PATH = str(Path(app.instance_path) / 'uid2info.tsv'),
+    UID2COOKIE_PATH = str(Path(app.instance_path) / 'uid2cookie.tsv'),
     TOKEN_DURATION = 24 * 60 * 60 * 5
 )
 app.config.from_pyfile('config.py', silent = True)
-app.config.from_pyfile('/auth-app-config.py', silent = True)
+app.config.from_pyfile('/config.py', silent = True)
 
 USTS = URLSafeTimedSerializer(app.config['SECRET_KEY'])
 
 UID2INFO = dict(reader(Path(app.config['UID2INFO_PATH']).open('r'), delimiter = '\t'))
+UID2COOKIE = dict(reader(Path(app.config['UID2COOKIE_PATH']).open('r'), delimiter = '\t'))
 
 Path(app.instance_path).mkdir(exist_ok = True)
 PICTURES_FOLDER_PATH = Path(app.config['PICTURES_FOLDER']).absolute()
@@ -36,7 +38,7 @@ def get_token(uid):
 @app.cli.command("get-cookie")
 @click.argument("uid")
 def get_cookie(uid):
-    print(USTS.dumps(UID2INFO[uid]))
+    print(UID2COOKIE[uid])
 
 @app.route('/stats')
 def stats():
@@ -89,5 +91,5 @@ def index(token = None):
               abort(500)
           return jsonify({
             'status': 'ok',
-            'cookie': f'danake_routing={USTS.dumps(UID2INFO[uid])}; Max-Age={app.config["MAX_AGE"]}; Path=/; Secure; SameSite=Strict' })
+            'cookie': f'danake_routing={UID2COOKIE[uid]}; Max-Age={app.config["MAX_AGE"]}; Path=/; Secure; SameSite=Strict' })
     return render_template('index.html', status = status, info = info)

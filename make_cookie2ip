@@ -1,0 +1,26 @@
+#!/usr/bin/env python3
+
+from csv import reader
+from pathlib import Path
+from sys import exit
+
+import docker
+
+UID2COOKIE_PATH = 'confs/uid2cookie.tsv'
+COOKIE2IP_PATH = 'confs/cookie2ip.tsv'
+
+UID2COOKIE = dict(reader(Path(UID2COOKIE_PATH).open('r'), delimiter = '\t'))
+
+client = docker.from_env()
+service = client.services.get('danake_code-server')
+
+IPS = [task['NetworksAttachments'][0]['Addresses'][0].split('/')[0] for task in service.tasks({'desired-state': 'running'})]
+
+if len(IPS) != len(UID2COOKIE):
+  exit(f'Scale code-server to {len(UID2COOKIE)} with:\n\n\tdocker service scale danake_code-server={len(UID2COOKIE)}')
+
+Path(COOKIE2IP_PATH).write_text('\n'.join(
+  f'{cookie}\t{ip};' for cookie, ip in zip(UID2COOKIE.values(), IPS)
+))
+
+print('Please restart reverse-proxy with:\n\n\tdocker service scale danake_reverse-proxy=0\n\tdocker service scale danake_reverse-proxy=1')

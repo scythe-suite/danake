@@ -6,6 +6,8 @@ shift
 #docker tag $REPO/$IMAGE:$VERSION docker.pkg.github.com/$OWNER/$REPO/$IMAGE:latest
 
 export DANAKE_VERSION="0.1.0-beta"
+export DANAKE_CONFS="./confs"
+export DANAKE_DATA="./data"
 
 case "$ADMIN_COMMAND" in
 
@@ -26,6 +28,10 @@ case "$ADMIN_COMMAND" in
 
     setup)
         mkdir -p ./data/{logs,pictures,registry}
+    ;;
+
+    token)
+        docker run --rm -it -v $(pwd)/confs/uid2info.tsv:/app/instance/uid2info.tsv:ro -v $(pwd)/confs/uid2cookie.tsv:/app/instance/uid2cookie.tsv:ro  127.0.0.1:5000/danake/auth-app:0.1.0-beta flask get-token "$1"
     ;;
 
     *)
