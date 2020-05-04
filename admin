@@ -14,11 +14,24 @@ export DANAKE_UID_NUM=$(wc -l confs/uid2info.tsv | cut -d' ' -f1)
 case "$ADMIN_COMMAND" in
 
     build)
-      docker-compose -f build.yml build
+      for img in cli reverse-proxy auth-app code-server; do
+        docker build $img \
+          --tag "danake/$img:$DANAKE_VERSION" \
+          --tag "127.0.0.1:5000/danake/$img:$DANAKE_VERSION" \
+          --tag "docker.pkg.github.com/scythe-suite/danake/$img:$DANAKE_VERSION"
+      done
     ;;
 
-    push)
-      docker-compose -f build.yml push
+    push-local)
+      for img in cli reverse-proxy auth-app code-server; do
+        docker push "127.0.0.1:5000/danake/$img:$DANAKE_VERSION"
+      done
+    ;;
+
+    push-github)
+      for img in cli reverse-proxy auth-app code-server; do
+        docker push "docker.pkg.github.com/scythe-suite/danake/$img:$DANAKE_VERSION"
+      done
     ;;
 
     setup)
