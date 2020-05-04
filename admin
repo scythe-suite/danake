@@ -23,11 +23,11 @@ case "$ADMIN_COMMAND" in
         mkdir -p ./data/{logs,pictures,registry}
     ;;
 
-    base-start);
+    base-start)
       docker stack deploy -c base.yml base
     ;;
 
-    base-stop);
+    base-stop)
       docker stack rm base
     ;;
 
