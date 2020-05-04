@@ -11,23 +11,32 @@ export DANAKE_DATA="./data"
 
 case "$ADMIN_COMMAND" in
 
-    start)
-      #docker stack deploy -c base.yml base
-      docker stack deploy -c danake.yml danake
-    ;;
-
-    stop)
-      docker stack rm danake
-      #docker stack rm base
-    ;;
-
     build)
       docker-compose -f build.yml build
+    ;;
+
+    push)
       docker-compose -f build.yml push
     ;;
 
     setup)
         mkdir -p ./data/{logs,pictures,registry}
+    ;;
+
+    base-start);
+      docker stack deploy -c base.yml base
+    ;;
+
+    base-stop);
+      docker stack rm base
+    ;;
+
+    start)
+      docker stack deploy -c danake.yml danake
+    ;;
+
+    stop)
+      docker stack rm danake
     ;;
 
     token)
