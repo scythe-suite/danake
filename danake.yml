@@ -29,6 +29,7 @@ services:
 
   auth:
     image: "127.0.0.1:5000/danake/auth:${DANAKE_VERSION:-latest}"
+    user: "${DANAKE_UID}:${DANAKE_GID}"
     deploy:
       mode: replicated
       replicas: 1

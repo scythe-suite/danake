@@ -6,6 +6,10 @@ shift
 #docker tag $REPO/$IMAGE:$VERSION docker.pkg.github.com/$OWNER/$REPO/$IMAGE:latest
 
 export DANAKE_NETWORK="159.149.129.96/27"
+
+export DANAKE_UID=$(id -u)
+export DANAKE_GID=$(id -g)
+
 export DANAKE_VERSION="0.1.0-beta"
 export DANAKE_CONFS="./confs"
 export DANAKE_DATA="./data"
@@ -16,6 +20,7 @@ case "$ADMIN_COMMAND" in
     build)
       for img in $(ls modules); do
         docker build modules/$img \
+          --build-arg danake_uid=$DANAKE_UID --build-arg danake_gid=$DANAKE_GID \
           --tag "danake/$img:latest" \
           --tag "danake/$img:$DANAKE_VERSION" \
           --tag "127.0.0.1:5000/danake/$img:latest" \
@@ -57,7 +62,9 @@ case "$ADMIN_COMMAND" in
     ;;
 
     generate-cookies)
-      docker run --rm -v $(realpath "$DANAKE_CONFS"):/confs danake/cli:$DANAKE_VERSION generate-cookies
+      docker run --rm \
+        --mount type=bind,source=$(realpath "$DANAKE_CONFS"),target=/confs \
+        danake/cli:$DANAKE_VERSION generate-cookies
     ;;
 
     start)
