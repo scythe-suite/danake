@@ -1,8 +1,8 @@
 version: "3.8"
 services:
 
-  reverse-proxy:
-    image: "127.0.0.1:5000/danake/reverse-proxy:${DANAKE_VERSION:-latest}"
+  router:
+    image: "127.0.0.1:5000/danake/router:${DANAKE_VERSION:-latest}"
     deploy:
       mode: replicated
       replicas: 1
@@ -27,8 +27,8 @@ services:
       - privkey.pem
       - dhparam.pem
 
-  auth-app:
-    image: "127.0.0.1:5000/danake/auth-app:${DANAKE_VERSION:-latest}"
+  auth:
+    image: "127.0.0.1:5000/danake/auth:${DANAKE_VERSION:-latest}"
     deploy:
       mode: replicated
       replicas: 1
@@ -50,14 +50,6 @@ services:
       - source: auth-config.py
         target: /config.py
 
-  # code-server:
-  #   image: "127.0.0.1:5000/danake/code-server:${DANAKE_VERSION:-latest}"
-  #   deploy:
-  #     mode: replicated
-  #     replicas: "${DANAKE_UID_NUM}"
-  #   networks:
-  #     - code-server_network
-
 networks:
   backend_network:
     driver: overlay
@@ -72,4 +64,3 @@ secrets:
     file: "${DANAKE_CONFS}/certs/dhparam.pem"
   auth-config.py:
     file: "${DANAKE_CONFS}/auth-config.py"
-

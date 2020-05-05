@@ -4,8 +4,8 @@ RUN apt-get update && apt-get install --no-install-recommends -y \
     python3-pip \
     && rm -rf /var/lib/apt/lists/*
 RUN python3 -m pip install docker[tls]
-COPY gencookies.py /cli/gencookies
-COPY deploycs.py /cli/deploycs
+COPY generate-cookies.py /cli/generate-cookies
+COPY start-editor.py /cli/start-editor
 WORKDIR /cli
+ENV DANAKE_VERSION latest
 ENTRYPOINT [ "python3" ]
-CMD [ "gencookies" ]
