@@ -17,7 +17,7 @@
     
     
       
-        <title>Deploying and monitoring - ∂anake</title>
+        <title>Deploying and Monitoring - ∂anake</title>
       
     
     
@@ -83,7 +83,7 @@
           </span>
           <span class="md-header-nav__topic md-ellipsis">
             
-              Deploying and monitoring
+              Deploying and Monitoring
             
           </span>
         </div>
@@ -195,8 +195,8 @@
 
 
   <li class="md-nav__item">
-    <a href="../auth/" title="The authentication flow" class="md-nav__link">
-      The authentication flow
+    <a href="../auth/" title="The Authentication Flow" class="md-nav__link">
+      The Authentication Flow
     </a>
   </li>
 
@@ -213,8 +213,8 @@
     <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
     
     
-    <a href="./" title="Deploying and monitoring" class="md-nav__link md-nav__link--active">
-      Deploying and monitoring
+    <a href="./" title="Deploying and Monitoring" class="md-nav__link md-nav__link--active">
+      Deploying and Monitoring
     </a>
     
   </li>
@@ -226,8 +226,8 @@
 
 
   <li class="md-nav__item">
-    <a href="../testing/" title="Testing environment setup" class="md-nav__link">
-      Testing environment setup
+    <a href="../testing/" title="The development and testing environment" class="md-nav__link">
+      The development and testing environment
     </a>
   </li>
 
@@ -248,21 +248,22 @@
                   
                 
                 
-                <h1>Deploying and monitoring</h1>
+                <h1>Deploying and Monitoring</h1>
 <p>Two preliminary steps to run ∂anake are:</p>
 <ul>
 <li>setup a <a href="https://docs.docker.com/swarm/">Docker Swarm</a> clustering environment,</li>
-<li>obtain <em>SSL/TLS Certificates</em> for the front facing web site — for example using <a href="https://letsencrypt.org/">Let's Encrypt</a>.</li>
+<li>obtain <em>SSL/TLS Certificates</em> for the front facing web site — for example
+  using <a href="https://letsencrypt.org/">Let's Encrypt</a>.</li>
 </ul>
 <p>Such steps are quite standard (albeit complex), so are not described in detail
-here. The <a href="../testing/">testing setup</a> suggest a simple way to prepare a local
+here. The <a href="../testing/">testing setup</a> suggests a simple way to prepare a local
 environment to experiment before installing on dedicated servers.</p>
 <p>To run the ∂anake system, several <em>services</em> need to be deployed:</p>
 <ul>
 <li>the <code>base</code> <em>stack</em> providing the <a href="https://www.portainer.io/">Portainer</a>
   monitoring service, and a local <a href="https://docs.docker.com/registry/">Docker
-  Registry</a> required to provide the <em>images</em>
-  to all the other involved services;</li>
+  Registry</a> required to provide, if needed,
+  development <em>images</em> to all the other involved services;</li>
 <li>a <code>danake</code> stack providing the <strong>router</strong> and <strong>auth</strong> modules;</li>
 <li>a set of separate services providing an instance of the <strong>editor</strong> module per
   student.</li>
@@ -270,7 +271,12 @@ environment to experiment before installing on dedicated servers.</p>
 <p>The first stack can be deployed without any further configuration issuing the command</p>
 <pre><code>./admin start-base
 </code></pre>
-<p>(and possibly removed, at the end of the session, with <code>./admin stop-base</code>).</p>
+<p>(and possibly removed, at the end of the session, with <code>./admin stop-base</code>).
+Once this stack is running, the command</p>
+<pre><code>./admin open-monitor
+</code></pre>
+<p>can be run to open the monitoring site; the first connection will require to set
+a username and password that <strong>must be kept secret</strong>.</p>
 <p>To run the rest of the services, the <em>auth</em> module needs two configuration
 files, both placed in the <code>confs</code> directory:</p>
 <ul>
@@ -280,25 +286,30 @@ files, both placed in the <code>confs</code> directory:</p>
 <li><code>TOKEN_DURATION</code> and <code>COOKIE_DURATION</code> the expiration time for the token and cookie (in seconds).</li>
 </ul>
 </li>
-<li>a <code>uid2info.tsv</code> (in <a href="https://en.wikipedia.org/wiki/Tab-separated_values">tab
-  separated</a> format)
-  containing a two fields line per student, the first field being the student ID
+<li>a <code>uid2info.tsv</code>
+  (in <a href="https://en.wikipedia.org/wiki/Tab-separated_values">tab separated</a> format)
+  containing a two-field line per student, the first field being the student ID
   number and the second any string useful to identify the student (for instance
   her first and last name).</li>
 </ul>
-<p>Before deploying other services, cookies need to generated, the command</p>
+<p>Before deploying other services, cookies need to be generated. The command</p>
 <pre><code>./admin generate-cookies
 </code></pre>
 <p>starting from the list in <code>uid2info.tsv</code> will generate the <code>cookie2uid.map</code> file
 (saved in the <code>confs</code> directory, that <strong>must be kept secret</strong>) containing the
-association between cookies and students IDs used both by the <em>auth</em> module and
+association between cookies and student IDs used both by the <em>auth</em> module and
 the <em>router</em> one.</p>
 <p>Now the second stack and editor services can be deployed issuing</p>
-<pre><code>./admin start-base
+<pre><code>./admin start
 ./admin start-editor
 </code></pre>
 <p>(such services can be removed using respectively <code>./admin stop-base</code> and
 <code>./admin stop-editor</code>).</p>
+<p>To tear down the system, the correct sequence is</p>
+<pre><code>./admin stop-editor
+./admin stop
+./admin stop-base
+</code></pre>
                 
               
               
@@ -317,7 +328,7 @@ the <em>router</em> one.</p>
     <div class="md-footer-nav">
       <nav class="md-footer-nav__inner md-grid" aria-label="Footer">
         
-          <a href="../auth/" title="The authentication flow" class="md-footer-nav__link md-footer-nav__link--prev" rel="prev">
+          <a href="../auth/" title="The Authentication Flow" class="md-footer-nav__link md-footer-nav__link--prev" rel="prev">
             <div class="md-footer-nav__button md-icon">
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
             </div>
@@ -326,19 +337,19 @@ the <em>router</em> one.</p>
                 <span class="md-footer-nav__direction">
                   Previous
                 </span>
-                The authentication flow
+                The Authentication Flow
               </div>
             </div>
           </a>
         
         
-          <a href="../testing/" title="Testing environment setup" class="md-footer-nav__link md-footer-nav__link--next" rel="next">
+          <a href="../testing/" title="The development and testing environment" class="md-footer-nav__link md-footer-nav__link--next" rel="next">
             <div class="md-footer-nav__title">
               <div class="md-ellipsis">
                 <span class="md-footer-nav__direction">
                   Next
                 </span>
-                Testing environment setup
+                The development and testing environment
               </div>
             </div>
             <div class="md-footer-nav__button md-icon">

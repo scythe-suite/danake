@@ -17,7 +17,7 @@
     
     
       
-        <title>Testing environment setup - ∂anake</title>
+        <title>The development and testing environment - ∂anake</title>
       
     
     
@@ -59,6 +59,11 @@
     <label class="md-overlay" for="__drawer"></label>
     <div data-md-component="skip">
       
+        
+        <a href="#the-local-registry" class="md-skip">
+          Skip to content
+        </a>
+      
     </div>
     <div data-md-component="announce">
       
@@ -83,7 +88,7 @@
           </span>
           <span class="md-header-nav__topic md-ellipsis">
             
-              Testing environment setup
+              The development and testing environment
             
           </span>
         </div>
@@ -195,8 +200,8 @@
 
 
   <li class="md-nav__item">
-    <a href="../auth/" title="The authentication flow" class="md-nav__link">
-      The authentication flow
+    <a href="../auth/" title="The Authentication Flow" class="md-nav__link">
+      The Authentication Flow
     </a>
   </li>
 
@@ -207,8 +212,8 @@
 
 
   <li class="md-nav__item">
-    <a href="../running/" title="Deploying and monitoring" class="md-nav__link">
-      Deploying and monitoring
+    <a href="../running/" title="Deploying and Monitoring" class="md-nav__link">
+      Deploying and Monitoring
     </a>
   </li>
 
@@ -225,9 +230,40 @@
     <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
     
     
-    <a href="./" title="Testing environment setup" class="md-nav__link md-nav__link--active">
-      Testing environment setup
+      <label class="md-nav__link md-nav__link--active" for="__toc">
+        The development and testing environment
+        <span class="md-nav__icon md-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 9h14V7H3v2m0 4h14v-2H3v2m0 4h14v-2H3v2m16 0h2v-2h-2v2m0-10v2h2V7h-2m0 6h2v-2h-2v2z"/></svg>
+        </span>
+      </label>
+    
+    <a href="./" title="The development and testing environment" class="md-nav__link md-nav__link--active">
+      The development and testing environment
     </a>
+    
+      
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+      </span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#the-local-registry" class="md-nav__link">
+    The local registry
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
     
   </li>
 
@@ -239,6 +275,36 @@
               </div>
             
             
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="toc">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+      </span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#the-local-registry" class="md-nav__link">
+    The local registry
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
           
           <div class="md-content">
             <article class="md-content__inner md-typeset">
@@ -248,16 +314,39 @@
                   
                 
                 
-                <h1>Testing environment setup</h1>
-<p>The easiest way prepare the environment is using <a href="https://docs.docker.com/machine/">Docker Machine</a> to setup a testing environment. Once installed the tool and the dependencies (most notably <a href="https://www.virtualbox.org/">VirtualBox</a>), just issue</p>
+                <h1>The development and testing environment</h1>
+<p>To test and develop ∂anake, the easiest way is to use <a href="https://docs.docker.com/machine/">Docker
+Machine</a> to setup an environment based on a
+set of virtual machines. Once installed the tool and the dependencies (most
+notably <a href="https://www.virtualbox.org/">VirtualBox</a>), just issue</p>
 <pre><code>./admin dm-create-vms
 ./admin dm-setup-swarm
 </code></pre>
-<p>This step (unless the hosts are not rebooted) must not be repeated. Once the vms are ready, to use them issue</p>
+<p>to create the virtual machines and setup the swarm running on them; this step
+(unless the hosts are rebooted) need not be repeated.</p>
+<p>Once the VMs are ready, to connect your local docker command with the remote
+daemon on the master virtual machine, use</p>
 <pre><code>eval $(./admin dm-env)
 </code></pre>
-<p>to setup the environment variables needed to the local docker installation to
-connect to the daemon running in the manager vm.</p>
+<p>to setup the needed environment variables in any new shell you are about to use.</p>
+<h2 id="the-local-registry">The local registry<a class="headerlink" href="#the-local-registry" title="Permanent link">#</a></h2>
+<p>In production mode, ∂anake pulls the images needed for the <em>router</em>, <em>auth</em>,
+<em>editor</em> and <em>cli</em> services from <a href="https://hub.docker.com/">Docker Hub</a>; such
+images can be modified just by the project owner.</p>
+<p>Beside the permission issues, it will be very time consuming in any case to
+upload modified development images on a public registry; for this reason, the
+<em>base</em> stack runs a local registry that can be used to distribute development
+images to cluster members participating in the swarm.</p>
+<p>To use such registry, just set the global variable <code>DANAKE_DEBUG</code> to a non empty
+value, for instance as</p>
+<pre><code>export DANAKE_DEBUG=1
+</code></pre>
+<p>Now, whenever some code or configuration in the <code>modules</code> directory is modified,
+just run</p>
+<pre><code>./admin/build
+./admin/push
+</code></pre>
+<p>to build the new images and upload them to the local registry.</p>
                 
               
               
@@ -276,7 +365,7 @@ connect to the daemon running in the manager vm.</p>
     <div class="md-footer-nav">
       <nav class="md-footer-nav__inner md-grid" aria-label="Footer">
         
-          <a href="../running/" title="Deploying and monitoring" class="md-footer-nav__link md-footer-nav__link--prev" rel="prev">
+          <a href="../running/" title="Deploying and Monitoring" class="md-footer-nav__link md-footer-nav__link--prev" rel="prev">
             <div class="md-footer-nav__button md-icon">
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
             </div>
@@ -285,7 +374,7 @@ connect to the daemon running in the manager vm.</p>
                 <span class="md-footer-nav__direction">
                   Previous
                 </span>
-                Deploying and monitoring
+                Deploying and Monitoring
               </div>
             </div>
           </a>
