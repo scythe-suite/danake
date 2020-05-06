@@ -8,7 +8,7 @@ RUN python3 -m pip install docker[tls]
 RUN mkdir /cli && chmod a+rx /cli
 COPY generate-cookies.py /cli/generate-cookies
 COPY start-editor.py /cli/start-editor
-RUN chmod a+r /cli/*
+RUN chmod -R a+rX /cli
 WORKDIR /cli
 ENV DANAKE_VERSION latest
 ENTRYPOINT [ "python3" ]
