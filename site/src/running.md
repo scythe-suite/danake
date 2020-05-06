@@ -23,7 +23,12 @@ The first stack can be deployed without any further configuration issuing the co
 
     ./admin start-base
 
-(and possibly removed, at the end of the session, with `./admin stop-base`).
+(and possibly removed, at the end of the session, with `./admin stop-base`). Once this stack is running, the command
+
+    ./admin open-monitor
+
+can be run to open the monitoring site; the first connection will require to set
+a username and password that **must be kept secret**.
 
 To run the rest of the services, the *auth* module needs two configuration
 files, both placed in the `confs` directory:
@@ -49,8 +54,14 @@ the *router* one.
 
 Now the second stack and editor services can be deployed issuing
 
-    ./admin start-base
+    ./admin start
     ./admin start-editor
 
 (such services can be removed using respectively `./admin stop-base` and
 `./admin stop-editor`).
+
+To tear down the system, the correct sequence is
+
+    ./admin stop-editor
+    ./admin stop
+    ./admin stop-base
