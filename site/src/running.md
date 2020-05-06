@@ -13,8 +13,9 @@ environment to experiment before installing on dedicated servers.
 To run the ∂anake system, several *services* need to be deployed:
 
 * the `base` *stack* providing the [Portainer](https://www.portainer.io/)
-  monitoring service, and a local [Docker  Registry](https://docs.docker.com/registry/)
-  required to provide the *images* to all the other involved services;
+  monitoring service, and a local [Docker
+  Registry](https://docs.docker.com/registry/) required to provide, if needed,
+  development *images* to all the other involved services;
 * a `danake` stack providing the **router** and **auth** modules;
 * a set of separate services providing an instance of the **editor** module per
   student.
@@ -23,7 +24,8 @@ The first stack can be deployed without any further configuration issuing the co
 
     ./admin start-base
 
-(and possibly removed, at the end of the session, with `./admin stop-base`). Once this stack is running, the command
+(and possibly removed, at the end of the session, with `./admin stop-base`).
+Once this stack is running, the command
 
     ./admin open-monitor
 
