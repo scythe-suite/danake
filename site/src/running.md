@@ -1,20 +1,20 @@
-# Deploying and monitoring
+# Deploying and Monitoring
 
 Two preliminary steps to run ∂anake are:
 
 * setup a [Docker Swarm](https://docs.docker.com/swarm/) clustering environment,
-* obtain *SSL/TLS Certificates* for the front facing web site — for example using [Let's Encrypt](https://letsencrypt.org/).
+* obtain *SSL/TLS Certificates* for the front facing web site — for example
+  using [Let's Encrypt](https://letsencrypt.org/).
 
 Such steps are quite standard (albeit complex), so are not described in detail
-here. The [testing setup](testing.md) suggest a simple way to prepare a local
+here. The [testing setup](testing.md) suggests a simple way to prepare a local
 environment to experiment before installing on dedicated servers.
 
 To run the ∂anake system, several *services* need to be deployed:
 
 * the `base` *stack* providing the [Portainer](https://www.portainer.io/)
-  monitoring service, and a local [Docker
-  Registry](https://docs.docker.com/registry/) required to provide the *images*
-  to all the other involved services;
+  monitoring service, and a local [Docker  Registry](https://docs.docker.com/registry/)
+  required to provide the *images* to all the other involved services;
 * a `danake` stack providing the **router** and **auth** modules;
 * a set of separate services providing an instance of the **editor** module per
   student.
@@ -32,19 +32,19 @@ files, both placed in the `confs` directory:
     * `SECRET_KEY`, a random string that **must be kept secret** used by
       [itsdangerous](https://itsdangerous.palletsprojects.com) to sign tokens,
     * `TOKEN_DURATION` and `COOKIE_DURATION` the expiration time for the token and cookie (in seconds).
-* a `uid2info.tsv` (in [tab
-  separated](https://en.wikipedia.org/wiki/Tab-separated_values) format)
-  containing a two fields line per student, the first field being the student ID
+* a `uid2info.tsv`
+  (in [tab separated](https://en.wikipedia.org/wiki/Tab-separated_values) format)
+  containing a two-field line per student, the first field being the student ID
   number and the second any string useful to identify the student (for instance
   her first and last name).
 
-Before deploying other services, cookies need to generated, the command
+Before deploying other services, cookies need to be generated. The command
 
     ./admin generate-cookies
 
 starting from the list in `uid2info.tsv` will generate the `cookie2uid.map` file
 (saved in the `confs` directory, that **must be kept secret**) containing the
-association between cookies and students IDs used both by the *auth* module and
+association between cookies and student IDs used both by the *auth* module and
 the *router* one.
 
 Now the second stack and editor services can be deployed issuing

@@ -1,4 +1,4 @@
-# The authentication flow
+# The Authentication Flow
 
 This document describes the authentication flow.
 
@@ -66,9 +66,10 @@ sequenceDiagram
   S ->> C: sends cookie
 </div>
 
-It must be clear that, since sharing the *routing cookie* among students and third parties is not
-impossible, **the present flow is quite weak**: any client with the same
-cookie will be routed to the same development environment.
+It must be clear that,
+since sharing the *routing cookie* among students and third parties is not impossible,
+**the present flow is quite weak**:
+any client with the same cookie will be routed to the same development environment.
 
 As a form of mitigation, the *reverse proxy* requires a HTTPS connection and
 keeps a timed log of *routing cookie* and *SSL Session ID* pairs it handles (see
