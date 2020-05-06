@@ -62,7 +62,7 @@ def index(token = None):
         status = 'MISSING_TOKEN'
     else:
         try:
-            uid = USTS.loads(token, COOKIE_DURATION = app.config['TOKEN_DURATION'])
+            uid = USTS.loads(token, max_age = app.config['TOKEN_DURATION'])
         except SignatureExpired:
             status = 'EXPIRED_TOKEN'
         except BadSignature:

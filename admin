@@ -104,8 +104,9 @@ case "$ADMIN_COMMAND" in
 
     token)
         docker run --rm -it \
-          -v $(pwd)/confs/uid2info.tsv:/app/instance/uid2info.tsv:ro \
-          -v $(pwd)/confs/cookie2uid.tsv:/app/instance/cookie2uid.tsv:ro  \
+          --mount type=bind,source=$(pwd)/confs/uid2info.tsv,target=/uid2info.tsv,readonly \
+          --mount type=bind,source=$(pwd)/confs/cookie2uid.map,target=/cookie2uid.map,readonly  \
+          --mount type=bind,source=$(pwd)/confs/auth-config.py,target=/config.py,readonly  \
           $DANAKE_REGISTRY/auth:$DANAKE_VERSION flask get-token "$1"
     ;;
 
