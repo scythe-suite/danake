@@ -12,18 +12,18 @@
       
         <meta name="author" content="Massimo Santini">
       
-      <link rel="shortcut icon" href="../../assets/images/favicon.png">
+      <link rel="shortcut icon" href="../assets/images/favicon.png">
       <meta name="generator" content="mkdocs-1.1, mkdocs-material-5.1.4">
     
     
       
-        <title>Authentication - ∂anake</title>
+        <title>Deploying and monitoring - ∂anake</title>
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.c4007cdc.min.css">
+      <link rel="stylesheet" href="../assets/stylesheets/main.c4007cdc.min.css">
       
-        <link rel="stylesheet" href="../../assets/stylesheets/palette.8435c73a.min.css">
+        <link rel="stylesheet" href="../assets/stylesheets/palette.8435c73a.min.css">
       
       
         
@@ -41,7 +41,7 @@
     
     
     
-      <link rel="stylesheet" href="../../css/extra.css">
+      <link rel="stylesheet" href="../css/extra.css">
     
     
       
@@ -66,7 +66,7 @@
     
       <header class="md-header" data-md-component="header">
   <nav class="md-header-nav md-grid" aria-label="Header">
-    <a href="../.." title="∂anake" class="md-header-nav__button md-logo" aria-label="∂anake">
+    <a href=".." title="∂anake" class="md-header-nav__button md-logo" aria-label="∂anake">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M15 4a8 8 0 11-8 8 8 8 0 018-8M3 12a6 6 0 004 5.65v2.09A8 8 0 017 4.26v2.09A6 6 0 003 12z"/></svg>
@@ -83,7 +83,7 @@
           </span>
           <span class="md-header-nav__topic md-ellipsis">
             
-              Authentication
+              Deploying and monitoring
             
           </span>
         </div>
@@ -153,7 +153,7 @@
                   <div class="md-sidebar__inner">
                     <nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href="../.." title="∂anake" class="md-nav__button md-logo" aria-label="∂anake">
+    <a href=".." title="∂anake" class="md-nav__button md-logo" aria-label="∂anake">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M15 4a8 8 0 11-8 8 8 8 0 018-8M3 12a6 6 0 004 5.65v2.09A8 8 0 017 4.26v2.09A6 6 0 003 12z"/></svg>
@@ -183,7 +183,7 @@
 
 
   <li class="md-nav__item">
-    <a href="../.." title="Introduction" class="md-nav__link">
+    <a href=".." title="Introduction" class="md-nav__link">
       Introduction
     </a>
   </li>
@@ -193,32 +193,17 @@
       
       
 
-  
 
+  <li class="md-nav__item">
+    <a href="../auth/" title="The authentication flow" class="md-nav__link">
+      The authentication flow
+    </a>
+  </li>
 
-  <li class="md-nav__item md-nav__item--active md-nav__item--nested">
     
-      <input class="md-nav__toggle md-toggle" data-md-toggle="nav-2" type="checkbox" id="nav-2" checked>
-    
-    <label class="md-nav__link" for="nav-2">
-      Design documents
-      <span class="md-nav__icon md-icon">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M8.59 16.58L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.42z"/></svg>
-      </span>
-    </label>
-    <nav class="md-nav" aria-label="Design documents" data-md-level="1">
-      <label class="md-nav__title" for="nav-2">
-        <span class="md-nav__icon md-icon">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
-        </span>
-        Design documents
-      </label>
-      <ul class="md-nav__list" data-md-scrollfix>
-        
-        
-          
-          
-          
+      
+      
+      
 
   
 
@@ -228,15 +213,22 @@
     <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
     
     
-    <a href="./" title="Authentication" class="md-nav__link md-nav__link--active">
-      Authentication
+    <a href="./" title="Deploying and monitoring" class="md-nav__link md-nav__link--active">
+      Deploying and monitoring
     </a>
     
   </li>
 
-        
-      </ul>
-    </nav>
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../testing/" title="Testing environment setup" class="md-nav__link">
+      Testing environment setup
+    </a>
   </li>
 
     
@@ -256,87 +248,57 @@
                   
                 
                 
-                <h1>Authentication</h1>
-<p>This document describes the authentication flow.</p>
-<p>The goal of the authentication in the context of the ∂anake component is to link
-a student (identified by her email and a picture of her face, taken beside a
-photo ID) to an instance of the development environment she will use for the
-course of the exam; the purpose of the flow is to make as difficult as possible
-for every other student to connect to the same development environment, once the
-link is established.</p>
-<p>The first actor in the flow is the <strong>reverse proxy</strong>, it intercepts HTTP
-requests from the <strong>student</strong> and routes them according to various parameters to
-the <strong>authentication application</strong> (that collects student pictures) or to one of
-the instances of the <strong>code server</strong>. All these components live in a Docker
-<em>swarm</em> and networking among them is segregated from the Internet, the swarm has a
-single <strong>entry point</strong> (that is a URL).</p>
-<p>The <strong>reverse proxy</strong> (sitting at the <em>entry point</em>) rules are:</p>
+                <h1>Deploying and monitoring</h1>
+<p>Two preliminary steps to run ∂anake are:</p>
 <ul>
-<li>if the <em>path</em> starts with <code>/da/</code> followed by a <em>token</em> (an alphanumeric
-  string), the request will be routed to the <em>authentication application</em>,</li>
-<li>if the <em>path</em> starts with <code>/cs/</code> (possibly followed by other parts), the
-  request will be routed to one of the instances of the <em>code server</em>, according
-  to the value of a <em>routing cookie</em> (if it corresponds to a known value);</li>
-<li>in every other case, an error page is returned.</li>
+<li>setup a <a href="https://docs.docker.com/swarm/">Docker Swarm</a> clustering environment,</li>
+<li>obtain <em>SSL/TLS Certificates</em> for the front facing web site — for example using <a href="https://letsencrypt.org/">Let's Encrypt</a>.</li>
 </ul>
-<p>Tokens and cookies are cryptographically signed (using for instance
-<a href="https://itsdangerous.palletsprojects.com">itsdangerous</a>) so that their
-integrity can be checked and, moreover, they will be hard to guess.</p>
-<p>Every <strong>student</strong> gets her personal <em>token</em> (as part of a link to the <em>∂anake</em>
-entry point) by email before the beginning of the exam.</p>
-<p>The <strong>authentication application</strong> performs the following steps:</p>
+<p>Such steps are quite standard (albeit complex), so are not described in detail
+here. The <a href="../testing/">testing setup</a> suggest a simple way to prepare a local
+environment to experiment before installing on dedicated servers.</p>
+<p>To run the ∂anake system, several <em>services</em> need to be deployed:</p>
 <ul>
-<li>whatever the request method is (<code>GET</code> or <code>POST</code>):<ul>
-<li>if the <em>token</em> is invalid, it returns an error page;</li>
-<li>the token is used to derive the student identity (such as her name, for
-  instance);</li>
-<li>if the student has already provided her picture, the application sends a
-  redirect to the <em>code server</em> instance;</li>
+<li>the <code>base</code> <em>stack</em> providing the <a href="https://www.portainer.io/">Portainer</a>
+  monitoring service, and a local <a href="https://docs.docker.com/registry/">Docker
+  Registry</a> required to provide the <em>images</em>
+  to all the other involved services;</li>
+<li>a <code>danake</code> stack providing the <strong>router</strong> and <strong>auth</strong> modules;</li>
+<li>a set of separate services providing an instance of the <strong>editor</strong> module per
+  student.</li>
+</ul>
+<p>The first stack can be deployed without any further configuration issuing the command</p>
+<pre><code>./admin start-base
+</code></pre>
+<p>(and possibly removed, at the end of the session, with <code>./admin stop-base</code>).</p>
+<p>To run the rest of the services, the <em>auth</em> module needs two configuration
+files, both placed in the <code>confs</code> directory:</p>
+<ul>
+<li>an <code>auth-config.py</code> file defining the following variables:<ul>
+<li><code>SECRET_KEY</code>, a random string that <strong>must be kept secret</strong> used by
+  <a href="https://itsdangerous.palletsprojects.com">itsdangerous</a> to sign tokens,</li>
+<li><code>TOKEN_DURATION</code> and <code>COOKIE_DURATION</code> the expiration time for the token and cookie (in seconds).</li>
 </ul>
 </li>
-<li>if the request method is <code>GET</code>, the application sends a form requesting the
-  student picture;</li>
-<li>if the request method is <code>POST</code> and the request contains a non-empty picture,
-  the application tries to store atomically the picture. If it succeeds, it
-  determines the <em>routing cookie</em> and sets it; in any case, it sends a redirect
-  to itself.</li>
+<li>a <code>uid2info.tsv</code> (in <a href="https://en.wikipedia.org/wiki/Tab-separated_values">tab
+  separated</a> format)
+  containing a two fields line per student, the first field being the student ID
+  number and the second any string useful to identify the student (for instance
+  her first and last name).</li>
 </ul>
-<p>The above process (if every steps is preformed in a valid way) can be
-represented by the following diagram.</p>
-<div class="mermaid">
-sequenceDiagram
-  participant T as Teacher
-  participant S as Student
-  participant A as Auth app
-  participant C as Code server
-  Note over T, S: via email
-  T ->> S: sends token
-  Note over S, C: via https
-  S ->> A: sends token
-  A -->> S: asks photo & id
-  S ->> A: sends photo & id
-  A -->> S: set cookie and redirect
-  S ->> C: sends cookie
-</div>
-
-<p>It must be clear that, since sharing the <em>routing cookie</em> among students and third parties is not
-impossible, <strong>the present flow is quite weak</strong>: any client with the same
-cookie will be routed to the same development environment.</p>
-<p>As a form of mitigation, the <em>reverse proxy</em> requires a HTTPS connection and
-keeps a timed log of <em>routing cookie</em> and <em>SSL Session ID</em> pairs it handles (see
-<a href="https://tools.ietf.org/html/rfc5246">RFC 246</a> for a description of the TLS
-Handshake and Session ID); this means that it will be very hard to conceal
-<em>routing cookie</em> sharing among different browsers. Another possible mitigation
-would be to restrict access to the <em>code server</em> from a single IP (the one of
-the first connection); given the instability of consumer networks (that moreover
-are often NAT-ed), this alternative seems less viable, even if more secure.</p>
-<p>The collected pictures will be used by a human verifier during the exam, or
-shortly after its end, to identify the students; immediately after the
-identification, the pictures can be discarded (for privacy compliance). Given
-that the <em>routing cookie</em> can only be obtained legally in the instant the
-picture is shot, the present flow ensures that, in case of cookie sharing, the
-identified student can not repudiate to have illegally offered her own credentials
-to a third person.</p>
+<p>Before deploying other services, cookies need to generated, the command</p>
+<pre><code>./admin generate-cookies
+</code></pre>
+<p>starting from the list in <code>uid2info.tsv</code> will generate the <code>cookie2uid.map</code> file
+(saved in the <code>confs</code> directory, that <strong>must be kept secret</strong>) containing the
+association between cookies and students IDs used both by the <em>auth</em> module and
+the <em>router</em> one.</p>
+<p>Now the second stack and editor services can be deployed issuing</p>
+<pre><code>./admin start-base
+./admin start-editor
+</code></pre>
+<p>(such services can be removed using respectively <code>./admin stop-base</code> and
+<code>./admin stop-editor</code>).</p>
                 
               
               
@@ -355,7 +317,7 @@ to a third person.</p>
     <div class="md-footer-nav">
       <nav class="md-footer-nav__inner md-grid" aria-label="Footer">
         
-          <a href="../.." title="Introduction" class="md-footer-nav__link md-footer-nav__link--prev" rel="prev">
+          <a href="../auth/" title="The authentication flow" class="md-footer-nav__link md-footer-nav__link--prev" rel="prev">
             <div class="md-footer-nav__button md-icon">
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
             </div>
@@ -364,11 +326,25 @@ to a third person.</p>
                 <span class="md-footer-nav__direction">
                   Previous
                 </span>
-                Introduction
+                The authentication flow
               </div>
             </div>
           </a>
         
+        
+          <a href="../testing/" title="Testing environment setup" class="md-footer-nav__link md-footer-nav__link--next" rel="next">
+            <div class="md-footer-nav__title">
+              <div class="md-ellipsis">
+                <span class="md-footer-nav__direction">
+                  Next
+                </span>
+                Testing environment setup
+              </div>
+            </div>
+            <div class="md-footer-nav__button md-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4z"/></svg>
+            </div>
+          </a>
         
       </nav>
     </div>
@@ -415,15 +391,15 @@ to a third person.</p>
       
     </div>
     
-      <script src="../../assets/javascripts/vendor.83fe6e3c.min.js"></script>
-      <script src="../../assets/javascripts/bundle.7e1cb91c.min.js"></script><script id="__lang" type="application/json">{"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents"}</script>
+      <script src="../assets/javascripts/vendor.83fe6e3c.min.js"></script>
+      <script src="../assets/javascripts/bundle.7e1cb91c.min.js"></script><script id="__lang" type="application/json">{"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents"}</script>
       
       <script>
         app = initialize({
-          base: "../..",
+          base: "..",
           features: [],
           search: Object.assign({
-            worker: "../../assets/javascripts/worker/search.37585f48.min.js"
+            worker: "../assets/javascripts/worker/search.37585f48.min.js"
           }, typeof search !== "undefined" && search)
         })
       </script>

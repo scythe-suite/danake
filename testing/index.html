@@ -12,18 +12,18 @@
       
         <meta name="author" content="Massimo Santini">
       
-      <link rel="shortcut icon" href="/assets/images/favicon.png">
+      <link rel="shortcut icon" href="../assets/images/favicon.png">
       <meta name="generator" content="mkdocs-1.1, mkdocs-material-5.1.4">
     
     
       
-        <title>∂anake</title>
+        <title>Testing environment setup - ∂anake</title>
       
     
     
-      <link rel="stylesheet" href="/assets/stylesheets/main.c4007cdc.min.css">
+      <link rel="stylesheet" href="../assets/stylesheets/main.c4007cdc.min.css">
       
-        <link rel="stylesheet" href="/assets/stylesheets/palette.8435c73a.min.css">
+        <link rel="stylesheet" href="../assets/stylesheets/palette.8435c73a.min.css">
       
       
         
@@ -41,7 +41,7 @@
     
     
     
-      <link rel="stylesheet" href="/css/extra.css">
+      <link rel="stylesheet" href="../css/extra.css">
     
     
       
@@ -66,7 +66,7 @@
     
       <header class="md-header" data-md-component="header">
   <nav class="md-header-nav md-grid" aria-label="Header">
-    <a href="/." title="∂anake" class="md-header-nav__button md-logo" aria-label="∂anake">
+    <a href=".." title="∂anake" class="md-header-nav__button md-logo" aria-label="∂anake">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M15 4a8 8 0 11-8 8 8 8 0 018-8M3 12a6 6 0 004 5.65v2.09A8 8 0 017 4.26v2.09A6 6 0 003 12z"/></svg>
@@ -83,7 +83,7 @@
           </span>
           <span class="md-header-nav__topic md-ellipsis">
             
-              
+              Testing environment setup
             
           </span>
         </div>
@@ -153,7 +153,7 @@
                   <div class="md-sidebar__inner">
                     <nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href="/." title="∂anake" class="md-nav__button md-logo" aria-label="∂anake">
+    <a href=".." title="∂anake" class="md-nav__button md-logo" aria-label="∂anake">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M15 4a8 8 0 11-8 8 8 8 0 018-8M3 12a6 6 0 004 5.65v2.09A8 8 0 017 4.26v2.09A6 6 0 003 12z"/></svg>
@@ -183,7 +183,7 @@
 
 
   <li class="md-nav__item">
-    <a href="/." title="Introduction" class="md-nav__link">
+    <a href=".." title="Introduction" class="md-nav__link">
       Introduction
     </a>
   </li>
@@ -195,7 +195,7 @@
 
 
   <li class="md-nav__item">
-    <a href="/auth/" title="The authentication flow" class="md-nav__link">
+    <a href="../auth/" title="The authentication flow" class="md-nav__link">
       The authentication flow
     </a>
   </li>
@@ -207,7 +207,7 @@
 
 
   <li class="md-nav__item">
-    <a href="/running/" title="Deploying and monitoring" class="md-nav__link">
+    <a href="../running/" title="Deploying and monitoring" class="md-nav__link">
       Deploying and monitoring
     </a>
   </li>
@@ -217,11 +217,18 @@
       
       
 
+  
 
-  <li class="md-nav__item">
-    <a href="/testing/" title="Testing environment setup" class="md-nav__link">
+
+  <li class="md-nav__item md-nav__item--active">
+    
+    <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+    
+    
+    <a href="./" title="Testing environment setup" class="md-nav__link md-nav__link--active">
       Testing environment setup
     </a>
+    
   </li>
 
     
@@ -236,8 +243,23 @@
           <div class="md-content">
             <article class="md-content__inner md-typeset">
               
-  <h1>404 - Not found</h1>
-
+                
+                
+                  
+                
+                
+                <h1>Testing environment setup</h1>
+<p>The easiest way prepare the environment is using <a href="https://docs.docker.com/machine/">Docker Machine</a> to setup a testing environment. Once installed the tool and the dependencies (most notably <a href="https://www.virtualbox.org/">VirtualBox</a>), just issue</p>
+<pre><code>./admin dm-create-vms
+./admin dm-setup-swarm
+</code></pre>
+<p>This step (unless the hosts are not rebooted) must not be repeated. Once the vms are ready, to use them issue</p>
+<pre><code>eval $(./admin dm-env)
+</code></pre>
+<p>to setup the environment variables needed to the local docker installation to
+connect to the daemon running in the manager vm.</p>
+                
+              
               
                 
 
@@ -250,6 +272,27 @@
       
         
 <footer class="md-footer">
+  
+    <div class="md-footer-nav">
+      <nav class="md-footer-nav__inner md-grid" aria-label="Footer">
+        
+          <a href="../running/" title="Deploying and monitoring" class="md-footer-nav__link md-footer-nav__link--prev" rel="prev">
+            <div class="md-footer-nav__button md-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+            </div>
+            <div class="md-footer-nav__title">
+              <div class="md-ellipsis">
+                <span class="md-footer-nav__direction">
+                  Previous
+                </span>
+                Deploying and monitoring
+              </div>
+            </div>
+          </a>
+        
+        
+      </nav>
+    </div>
   
   <div class="md-footer-meta md-typeset">
     <div class="md-footer-meta__inner md-grid">
@@ -293,15 +336,15 @@
       
     </div>
     
-      <script src="/assets/javascripts/vendor.83fe6e3c.min.js"></script>
-      <script src="/assets/javascripts/bundle.7e1cb91c.min.js"></script><script id="__lang" type="application/json">{"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents"}</script>
+      <script src="../assets/javascripts/vendor.83fe6e3c.min.js"></script>
+      <script src="../assets/javascripts/bundle.7e1cb91c.min.js"></script><script id="__lang" type="application/json">{"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents"}</script>
       
       <script>
         app = initialize({
-          base: "/",
+          base: "..",
           features: [],
           search: Object.assign({
-            worker: "/assets/javascripts/worker/search.37585f48.min.js"
+            worker: "../assets/javascripts/worker/search.37585f48.min.js"
           }, typeof search !== "undefined" && search)
         })
       </script>
