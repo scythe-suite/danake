@@ -55,10 +55,13 @@ case "$ADMIN_COMMAND" in
 
     start-base)
       docker stack deploy -c base.yml base
+    ;;
+
+    open-monitor)
       if [ -z "$DOCKER_MACHINE_NAME" ]; then
-        echo "Connect to https://$(hostname):9000/ for manager"
+        python -m webbrowser -n https://$(hostname):9000/
       else
-        echo "Connect to https://$(docker-machine ip danake-manager):9000/ for manager"
+        python -m webbrowser -n https://$(docker-machine ip danake-manager):9000/
       fi
     ;;
 
