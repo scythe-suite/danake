@@ -113,6 +113,29 @@ case "$ADMIN_COMMAND" in
         sudo ufw allow proto udp from ${DANAKE_NETWORK} to any port 4789
     ;;
 
+    dm-createvms)
+      for vm in manager worker0 worker1; do
+          docker-machine rm danake-$vm
+          docker-machine create danake-$vm
+      done
+      docker-machine ssh danake-manager mkdir -p /home/docker/data
+    ;;
+
+    dm-setupswarm)
+      MANAGER_IP=$(docker-machine ip danake-manager)
+      docker-machine ssh danake-manager docker swarm init --advertise-addr $MANAGER_IP
+      JOIN_CMD=$(docker-machine ssh danake-manager docker swarm join-token  worker | grep 'docker swarm join')
+      for vm in worker0 worker1; do
+        docker-machine ssh danake-$vm $JOIN_CMD
+      done
+      docker-machine ssh danake-manager docker node ls
+    ;;
+
+    dm-env)
+      docker-machine env danake-manager
+      echo "echo Connect to https://$(docker-machine ip danake-manager):9000/ for manager"
+    ;;
+
     *)
         echo "danake-admin: command '$ADMIN_COMMAND' not recognized" >&2
         exit 1
