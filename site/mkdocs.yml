@@ -52,5 +52,6 @@ extra_javascript:
 
 nav:
   - index.md
-  - Design documents:
-    - design/auth.md
+  - auth.md
+  - running.md
+  - testing.md

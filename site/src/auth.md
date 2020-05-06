@@ -1,4 +1,4 @@
-# Authentication
+# The authentication flow
 
 This document describes the authentication flow.
 

@@ -10,13 +10,13 @@ __version__ = '0.1.0-beta'
 
 app = Flask(__name__, instance_relative_config = True)
 app.config.from_mapping(
-    MAX_AGE = 60 * 60 * 4, # 4h
-    SECRET_KEY = 'dev',
     MAX_CONTENT_LENGTH = 3 * 1024 * 1024,
-    PICTURES_FOLDER = str(Path(app.instance_path) / 'pictures'),
-    UID2INFO_PATH = str(Path(app.instance_path) / 'uid2info.tsv'),
-    COOKIE2UID_PATH = str(Path(app.instance_path) / 'cookie2uid.tsv'),
-    TOKEN_DURATION = 24 * 60 * 60 * 5
+    PICTURES_FOLDER = '/pictures',
+    UID2INFO_PATH = '/uid2info.tsv',
+    COOKIE2UID_PATH = '/cookie2uid.map',
+    SECRET_KEY = 'dev-only-key',
+    COOKIE_DURATION = 60 * 60 * 4, # 4h
+    TOKEN_DURATION = 60 * 60 * 5 # 5h
 )
 app.config.from_pyfile('config.py', silent = True)
 app.config.from_pyfile('/config.py', silent = True)
@@ -62,7 +62,7 @@ def index(token = None):
         status = 'MISSING_TOKEN'
     else:
         try:
-            uid = USTS.loads(token, max_age = app.config['TOKEN_DURATION'])
+            uid = USTS.loads(token, COOKIE_DURATION = app.config['TOKEN_DURATION'])
         except SignatureExpired:
             status = 'EXPIRED_TOKEN'
         except BadSignature:
@@ -95,5 +95,5 @@ def index(token = None):
               abort(500)
           return jsonify({
             'status': 'ok',
-            'cookie': f'danake_routing={UID2COOKIE[uid]}; Max-Age={app.config["MAX_AGE"]}; Path=/; Secure; SameSite=Strict' })
+            'cookie': f'danake_routing={UID2COOKIE[uid]}; Max-Age={app.config["COOKIE_DURATION"]}; Path=/; Secure; SameSite=Strict' })
     return render_template('index.html', status = status, info = info)

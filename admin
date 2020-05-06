@@ -55,6 +55,11 @@ case "$ADMIN_COMMAND" in
 
     start-base)
       docker stack deploy -c base.yml base
+      if [ -z "$DOCKER_MACHINE_NAME" ]; then
+        echo "Connect to https://$(hostname):9000/ for manager"
+      else
+        echo "Connect to https://$(docker-machine ip danake-manager):9000/ for manager"
+      fi
     ;;
 
     stop-base)
@@ -113,7 +118,7 @@ case "$ADMIN_COMMAND" in
         sudo ufw allow proto udp from ${DANAKE_NETWORK} to any port 4789
     ;;
 
-    dm-createvms)
+    dm-create-vms)
       for vm in manager worker0 worker1; do
           docker-machine rm danake-$vm
           docker-machine create danake-$vm
@@ -121,7 +126,7 @@ case "$ADMIN_COMMAND" in
       docker-machine ssh danake-manager mkdir -p /home/docker/data
     ;;
 
-    dm-setupswarm)
+    dm-setup-swarm)
       MANAGER_IP=$(docker-machine ip danake-manager)
       docker-machine ssh danake-manager docker swarm init --advertise-addr $MANAGER_IP
       JOIN_CMD=$(docker-machine ssh danake-manager docker swarm join-token  worker | grep 'docker swarm join')
@@ -133,7 +138,6 @@ case "$ADMIN_COMMAND" in
 
     dm-env)
       docker-machine env danake-manager
-      echo "echo Connect to https://$(docker-machine ip danake-manager):9000/ for manager"
     ;;
 
     *)
