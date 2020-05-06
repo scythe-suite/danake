@@ -60,8 +60,9 @@ case "$ADMIN_COMMAND" in
     ;;
 
     generate-cookies)
+      # this ensure the file exits and hence will have the
+      touch $(realpath "$DANAKE_CONFS")/cookie2uid.map
       docker run --rm \
-        --user "$DANAKE_UID:$DANAKE_GID" \
         --mount type=bind,source=$(realpath "$DANAKE_CONFS"),target=/confs \
         $DANAKE_REGISTRY/cli:$DANAKE_VERSION generate-cookies
     ;;
