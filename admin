@@ -39,20 +39,18 @@ case "$ADMIN_COMMAND" in
       done
     ;;
 
-    setup-dirs)
-        mkdir -p ./data/{logs,pictures}
-    ;;
-
     start-base)
       docker stack deploy -c base.yml base
     ;;
 
     open-monitor)
       if [ -z "$DOCKER_MACHINE_NAME" ]; then
-        python -m webbrowser -n https://$(hostname):9000/
+        url="https://$(hostname):9000/"
       else
-        python -m webbrowser -n https://$(docker-machine ip danake-manager):9000/
+        url="https://$(docker-machine ip "$DOCKER_MACHINE_NAME"):9000/"
       fi
+      echo "Attempting to open $url"
+      python -m webbrowser -n "$url"
     ;;
 
     stop-base)
@@ -68,6 +66,7 @@ case "$ADMIN_COMMAND" in
     ;;
 
     start)
+      mkdir -p ./data/{logs,pictures}
       docker stack deploy -c danake.yml danake
     ;;
 
@@ -98,7 +97,9 @@ case "$ADMIN_COMMAND" in
     ;;
 
     stop-editor)
-      docker service rm $(docker service ls -q --filter label=danake=editor)
+      if docker service ls --filter label=danake=editor | grep editor- >/dev/null; then
+        docker service rm $(docker service ls -q --filter label=danake=editor)
+      fi
     ;;
 
     token)
@@ -121,17 +122,19 @@ case "$ADMIN_COMMAND" in
           docker-machine rm danake-$vm
           docker-machine create danake-$vm
       done
-      docker-machine ssh danake-manager mkdir -p /home/docker/data
+      docker-machine ssh danake-manager mkdir -p ./data/{logs,pictures}
     ;;
 
     dm-setup-swarm)
-      MANAGER_IP=$(docker-machine ip danake-manager)
-      docker-machine ssh danake-manager docker swarm init --advertise-addr $MANAGER_IP
-      JOIN_CMD=$(docker-machine ssh danake-manager docker swarm join-token  worker | grep 'docker swarm join')
+      MANAGER_IP=$(docker-machine ip "$DOCKER_MACHINE_NAME")
+      docker-machine ssh "$DOCKER_MACHINE_NAME" docker swarm leave -f
+      docker-machine ssh "$DOCKER_MACHINE_NAME" docker swarm init --advertise-addr $MANAGER_IP
+      JOIN_CMD=$(docker-machine ssh "$DOCKER_MACHINE_NAME" docker swarm join-token  worker | grep 'docker swarm join')
       for vm in worker0 worker1; do
+        docker-machine ssh danake-$vm docker swarm leave -f
         docker-machine ssh danake-$vm $JOIN_CMD
       done
-      docker-machine ssh danake-manager docker node ls
+      docker-machine ssh "$DOCKER_MACHINE_NAME" docker node ls
     ;;
 
     dm-env)
