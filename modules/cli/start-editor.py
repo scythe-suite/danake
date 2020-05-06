@@ -7,7 +7,7 @@ from secrets import token_urlsafe
 import docker
 
 DANAKE_VERSION = environ['DANAKE_VERSION']
-EDITOR_IMAGE = '127.0.0.1:5000/danake/editor:' + DANAKE_VERSION
+DANAKE_REGISTRY = environ['DANAKE_REGISTRY']
 
 UID2INFO_PATH = '/confs/uid2info.tsv'
 UID2INFO = dict(reader(Path(UID2INFO_PATH).open('r'), delimiter = '\t'))
@@ -22,7 +22,7 @@ print('starteditor: found hosts:', HOSTS)
 for uid, host in list(zip(UIDS, cycle(HOSTS))):
     print('starteditor: creating service: editor-{}@{}'.format(uid, host))
     connection.services.create(
-        image = EDITOR_IMAGE,
+        image = '{}/editor:{}'.format(DANAKE_REGISTRY, DANAKE_VERSION),
         name = 'editor-{}'.format(uid),
         constraints = ['node.hostname=={}'.format(host)],
         mounts = ['editor-{}-volume:/home/coder/project'.format(uid)],

@@ -2,7 +2,7 @@ version: "3.8"
 services:
 
   router:
-    image: "127.0.0.1:5000/danake/router:${DANAKE_VERSION:-latest}"
+    image: "${DANAKE_REGISTRY}/router:${DANAKE_VERSION:-latest}"
     deploy:
       mode: replicated
       replicas: 1
@@ -28,7 +28,7 @@ services:
       - dhparam.pem
 
   auth:
-    image: "127.0.0.1:5000/danake/auth:${DANAKE_VERSION:-latest}"
+    image: "${DANAKE_REGISTRY}/auth:${DANAKE_VERSION:-latest}"
     user: "${DANAKE_UID}:${DANAKE_GID}"
     deploy:
       mode: replicated
