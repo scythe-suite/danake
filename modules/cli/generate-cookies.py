@@ -3,7 +3,7 @@ from pathlib import Path
 from secrets import token_urlsafe
 
 UID2INFO_PATH = '/confs/uid2info.tsv'
-COOKIE2UID_PATH = '/confs/cookie2uid.tsv'
+COOKIE2UID_PATH = '/confs/cookie2uid.map'
 
 UID2INFO = dict(reader(Path(UID2INFO_PATH).open('r'), delimiter = '\t'))
 UIDS = sorted(UID2INFO.keys())

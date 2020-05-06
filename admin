@@ -21,7 +21,6 @@ case "$ADMIN_COMMAND" in
     build)
       for img in $(ls modules); do
         docker build modules/$img \
-          --build-arg danake_uid=$DANAKE_UID --build-arg danake_gid=$DANAKE_GID \
           --tag "$DANAKE_REGISTRY/$img:latest" \
           --tag "$DANAKE_REGISTRY/$img:$DANAKE_VERSION"
       done
@@ -62,6 +61,7 @@ case "$ADMIN_COMMAND" in
 
     generate-cookies)
       docker run --rm \
+        --user "$DANAKE_UID:$DANAKE_GID" \
         --mount type=bind,source=$(realpath "$DANAKE_CONFS"),target=/confs \
         $DANAKE_REGISTRY/cli:$DANAKE_VERSION generate-cookies
     ;;
