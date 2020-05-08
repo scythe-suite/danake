@@ -26,6 +26,6 @@ for uid, host in list(zip(UIDS, cycle(HOSTS))):
         name = 'editor-{}'.format(uid),
         constraints = ['node.hostname=={}'.format(host)],
         mounts = ['editor-{}-volume:/home/coder/project'.format(uid)],
-        networks = ['backend_editor_network'],
+        networks = ['danake_editor_network'],
         labels = {'danake': 'editor'}
     )

@@ -3,10 +3,8 @@ import os
 from pathlib import Path
 
 import click
-from flask import Flask, abort, jsonify, redirect, render_template, request, url_for
+from flask import Flask, Response, abort, jsonify, redirect, render_template, request, url_for
 from itsdangerous import BadSignature, SignatureExpired, URLSafeTimedSerializer
-
-__version__ = '0.1.0-beta'
 
 app = Flask(__name__, instance_relative_config = True)
 app.config.from_mapping(
@@ -34,15 +32,15 @@ Path(app.instance_path).mkdir(exist_ok = True)
 PICTURES_FOLDER_PATH = Path(app.config['PICTURES_FOLDER']).absolute()
 PICTURES_FOLDER_PATH.mkdir(exist_ok = True, parents = True)
 
-@app.cli.command("get-token")
-@click.argument("uid")
-def get_token(uid):
-    print(USTS.dumps(uid))
+DANAKE_AUTH = os.environ.get('DANAKE_AUTH', app.config['SECRET_KEY'])
 
-@app.cli.command("get-cookie")
-@click.argument("uid")
-def get_cookie(uid):
-    print(UID2COOKIE[uid])
+@app.route('/tokens')
+def tokens():
+    auth = request.headers.get('X-DANAKE-AUTH')
+    if auth is None or auth != DANAKE_AUTH: abort(401)
+    return Response(
+      '\n'.join('{}\t{}'.format(uid, USTS.dumps(uid)) for uid in UID2COOKIE.keys())
+    )
 
 @app.route('/stats')
 def stats():
@@ -53,7 +51,7 @@ def stats():
         'pictures': files,
     }
 
-@app.route('/', methods=['GET', 'POST'])
+@app.route('/', methods = ['GET', 'POST'])
 @app.route('/<string:token>', methods=['GET', 'POST'])
 def index(token = None):
     status = None

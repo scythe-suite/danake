@@ -3,7 +3,7 @@ export DANAKE_VERSION="0.3.0-beta"
 export DANAKE_CONFS="$(realpath -eL $DANAKE_HOME/../confs)"
 
 export DANAKE_CONTEXT=$(docker context inspect -f '{{.Name}}')
-export DANAKE_MANAGER_IP=$(docker node inspect self -f '{{.ManagerStatus.Addr}}' | cut -f1 -d:)
+export DANAKE_MANAGER_HOST=$(docker node inspect self -f '{{.Description.Hostname}}')
 
 if [ ! -r "$DANAKE_CONFS/danake-config.sh" ]; then
   echo "danake: missing user confs '$DANAKE_CONFS/danake-config.sh'" >&2

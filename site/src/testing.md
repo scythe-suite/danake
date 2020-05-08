@@ -36,6 +36,10 @@ value in the `danake-config.sh` file as
 
     export DANAKE_DEBUG=1
 
+and run the registry with
+
+    danake start registry
+
 Now, whenever some code or configuration in the `modules` directory is modified,
 just run
 
@@ -49,3 +53,7 @@ hand, you can get the images with
 
 Of course *pushing* to the official registry is restricted to the project owner.
 
+At the end of the development cycle, just unset `DANAKE_DEBUG` and stop the
+registry with
+
+    danake stop registry

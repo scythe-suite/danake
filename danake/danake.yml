@@ -3,6 +3,8 @@ services:
 
   router:
     image: "${DANAKE_REGISTRY}/router:${DANAKE_VERSION:-latest}"
+    depends_on:
+      - auth
     deploy:
       mode: replicated
       replicas: 1
@@ -48,14 +50,59 @@ services:
       - source: cookie2uid.map
         target: /cookie2uid.map
 
+  portainer:
+    image: portainer/portainer
+    depends_on:
+      - agent
+    command: -H tcp://tasks.agent:9001 --tlsskipverify --ssl --sslcert /run/secrets/fullchain.pem --sslkey /run/secrets/privkey.pem
+    deploy:
+      mode: replicated
+      replicas: 1
+      placement:
+        constraints: [node.role == manager]
+    ports:
+      - target: 8000 # ssh tunnel
+        published: 8000
+      - target: 9000
+        published: 9000
+    volumes:
+      - type: volume
+        source: portainer
+        target: /data
+    networks:
+      - agent_network
+    secrets:
+      - fullchain.pem
+      - privkey.pem
+
+  agent:
+    image: portainer/agent
+    deploy:
+      mode: global
+      placement:
+        constraints: [node.platform.os == linux]
+    volumes:
+      - type: bind
+        source: /var/run/docker.sock
+        target: /var/run/docker.sock
+      - type: bind
+        source: /var/lib/docker/volumes
+        target: /var/lib/docker/volumes
+    networks:
+      - agent_network
+
 networks:
+  agent_network:
+    driver: overlay
+    attachable: true
   editor_network:
     driver: overlay
     attachable: true
 
 volumes:
-  router_logs:
   auth_pictures:
+  portainer:
+  router_logs:
 
 configs:
   uid2info.tsv:

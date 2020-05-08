@@ -3,25 +3,22 @@ echo1 "Utils (context: $DANAKE_CONTEXT)"
 subcommand="$1"
 shift || true
 if [ -z "$subcommand" ]; then
-  echo "danake: utils: known subcommands: monitor, cookies, url, ufw" >&2
+  echo "danake: utils: known subcommands: monitor, cookies, tokens, ufw" >&2
   exit
 fi
 
 case "$subcommand" in
 
     monitor)
-      url="https://$DANAKE_MANAGER_IP:9000/"
+      url="https://$DANAKE_MANAGER_HOST:9000/"
       echo2 "Opening monitor at $url"
       python -m webbrowser -n "$url"
     ;;
 
-    url)
-        token=$(docker run --rm -it \
-          --mount type=bind,source=$DANAKE_CONFS/uid2info.tsv,target=/uid2info.tsv,readonly \
-          --mount type=bind,source=$DANAKE_CONFS/cookie2uid.map,target=/cookie2uid.map,readonly  \
-          --mount type=bind,source=$DANAKE_CONFS/auth-config.py,target=/config.py,readonly  \
-          $DANAKE_REGISTRY/auth:$DANAKE_VERSION flask get-token "$1")
-        echo "https://$DANAKE_MANAGER_IP/da/$token"
+    tokens)
+      echo2 "Extracting tokens"
+      eval $(grep SECRET_KEY "$DANAKE_CONFS/auth-config.py" | tr -d ' ')
+      curl -H "X-DANAKE-AUTH: $SECRET_KEY" https://$DANAKE_MANAGER_HOST/da/tokens
     ;;
 
     ufw)
