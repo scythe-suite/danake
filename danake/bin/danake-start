@@ -17,8 +17,7 @@ case "$subcommand" in
     ;;
 
     editor)
-      docker run --rm \
-        --mount type=bind,source=$(realpath "$DANAKE_CONFS"),target=/confs \
+      cat "$DANAKE_CONFS/uid2info.tsv" | docker run --rm -i \
         --env DANAKE_REGISTRY \
         --env DANAKE_VERSION \
         --mount type=bind,source=/var/run/docker.sock,target=/var/run/docker.sock \

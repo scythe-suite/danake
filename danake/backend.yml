@@ -53,13 +53,14 @@ networks:
     driver: overlay
     attachable: true
 
-configs:
-  uid2info.tsv:
-    file: "${DANAKE_CONFS}/uid2info.tsv"
-
 volumes:
   router_logs:
   auth_pictures:
+
+configs:
+  uid2info.tsv:
+    external: true
+    name: danake_uid2info
 
 secrets:
   fullchain.pem:
