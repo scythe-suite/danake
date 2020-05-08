@@ -1,8 +1,8 @@
 from csv import reader
 from itertools import cycle
 from os import environ
-from pathlib import Path
 from secrets import token_urlsafe
+from sys import stdin
 
 import docker
 
@@ -10,7 +10,7 @@ DANAKE_VERSION = environ['DANAKE_VERSION']
 DANAKE_REGISTRY = environ['DANAKE_REGISTRY']
 
 UID2INFO_PATH = '/confs/uid2info.tsv'
-UID2INFO = dict(reader(Path(UID2INFO_PATH).open('r'), delimiter = '\t'))
+UID2INFO = dict(reader(stdin, delimiter = '\t'))
 UIDS = sorted(UID2INFO.keys())
 
 connection = docker.from_env()
@@ -26,6 +26,6 @@ for uid, host in list(zip(UIDS, cycle(HOSTS))):
         name = 'editor-{}'.format(uid),
         constraints = ['node.hostname=={}'.format(host)],
         mounts = ['editor-{}-volume:/home/coder/project'.format(uid)],
-        networks = ['danake_backend_network'],
+        networks = ['backend_editor_network'],
         labels = {'danake': 'editor'}
     )

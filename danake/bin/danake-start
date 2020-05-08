@@ -13,7 +13,7 @@ case "$subcommand" in
     ;;
 
     backend)
-      docker stack deploy -c "$DANAKE_HOME/danake.yml" danake
+      docker stack deploy -c "$DANAKE_HOME/backend.yml" backend
     ;;
 
     editor)

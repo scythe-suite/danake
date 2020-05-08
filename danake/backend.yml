@@ -18,7 +18,7 @@ services:
         source: router_logs
         target: /logs
     networks:
-      - backend_network
+      - editor_network
     secrets:
       - fullchain.pem
       - privkey.pem
@@ -38,7 +38,7 @@ services:
         source: auth_pictures
         target: /pictures
     networks:
-      - backend_network
+      - editor_network
     configs:
       - source: uid2info.tsv
         target: /uid2info.tsv
@@ -49,7 +49,7 @@ services:
         target: /cookie2uid.map
 
 networks:
-  backend_network:
+  editor_network:
     driver: overlay
     attachable: true
 
@@ -63,12 +63,17 @@ volumes:
 
 secrets:
   fullchain.pem:
-    file: "${DANAKE_CONFS}/certs/fullchain.pem"
+    external: true
+    name: danake_fullchain
   privkey.pem:
-    file: "${DANAKE_CONFS}/certs/privkey.pem"
+    external: true
+    name: danake_privkey
   dhparam.pem:
-    file: "${DANAKE_CONFS}/certs/dhparam.pem"
+    external: true
+    name: danake_dhparam
   auth-config.py:
-    file: "${DANAKE_CONFS}/auth-config.py"
+    external: true
+    name: danake_auth_config
   cookie2uid.map:
-    file: "${DANAKE_CONFS}/cookie2uid.map"
+    external: true
+    name: danake_cookie2uid

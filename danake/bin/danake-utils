@@ -15,16 +15,6 @@ case "$subcommand" in
       python -m webbrowser -n "$url"
     ;;
 
-    cookies)
-      echo2 "Generating $DANAKE_CONFS/cookie2uid.map"
-      # this ensure the file exits and hence will have the
-      touch $(realpath "$DANAKE_CONFS")/cookie2uid.map
-      docker run --rm \
-        --mount type=bind,source=$(realpath "$DANAKE_CONFS"),target=/confs \
-        $DANAKE_REGISTRY/cli:$DANAKE_VERSION generate-cookies
-
-    ;;
-
     url)
         token=$(docker run --rm -it \
           --mount type=bind,source=$DANAKE_CONFS/uid2info.tsv,target=/uid2info.tsv,readonly \

@@ -6,6 +6,8 @@ services:
     deploy:
       mode: replicated
       replicas: 1
+      placement:
+        constraints: [node.role == manager]
     ports:
       - target: 5000
         published: 5000
@@ -13,22 +15,6 @@ services:
       - type: volume
         source: registry_data
         target: /var/lib/registry
-
-  agent:
-    image: portainer/agent
-    deploy:
-      mode: global
-      placement:
-        constraints: [node.platform.os == linux]
-    volumes:
-      - type: bind
-        source: /var/run/docker.sock
-        target: /var/run/docker.sock
-      - type: bind
-        source: /var/lib/docker/volumes
-        target: /var/lib/docker/volumes
-    networks:
-      - agent_network
 
   portainer:
     image: portainer/portainer
@@ -53,6 +39,22 @@ services:
       - fullchain.pem
       - privkey.pem
 
+  agent:
+    image: portainer/agent
+    deploy:
+      mode: global
+      placement:
+        constraints: [node.platform.os == linux]
+    volumes:
+      - type: bind
+        source: /var/run/docker.sock
+        target: /var/run/docker.sock
+      - type: bind
+        source: /var/lib/docker/volumes
+        target: /var/lib/docker/volumes
+    networks:
+      - agent_network
+
 networks:
   agent_network:
     driver: overlay
@@ -64,6 +66,8 @@ volumes:
 
 secrets:
   fullchain.pem:
-    file: "${DANAKE_CONFS}/certs/fullchain.pem"
+    external: true
+    name: danake_fullchain
   privkey.pem:
-    file: "${DANAKE_CONFS}/certs/privkey.pem"
+    external: true
+    name: danake_privkey

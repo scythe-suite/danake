@@ -1,11 +1,5 @@
 export DANAKE_VERSION="0.2.1-beta"
 
-if [ -z $DANAKE_DEBUG ]; then
-  export DANAKE_REGISTRY="scythesuitedanake"
-else
-  export DANAKE_REGISTRY="127.0.0.1:5000"
-fi
-
 export DANAKE_CONFS="$(realpath -eL $DANAKE_HOME/../confs)"
 
 export DANAKE_CONTEXT=$(docker context inspect -f '{{.Name}}')
@@ -16,3 +10,10 @@ if [ ! -r "$DANAKE_CONFS/danake-config.sh" ]; then
   exit 1
 fi
 source "$DANAKE_CONFS/danake-config.sh"
+
+if [ -z $DANAKE_DEBUG ]; then
+  export DANAKE_REGISTRY="scythesuitedanake"
+else
+  export DANAKE_REGISTRY="127.0.0.1:5000"
+fi
+
