@@ -19,8 +19,8 @@ case "$subcommand" in
     ;;
 
     editor)
-      if docker service ls --filter label=danake=editor | grep editor- >/dev/null; then
-        docker service rm $(docker service ls -q --filter label=danake=editor)
+      if docker service ls --filter label=danake_role=editor | grep editor- >/dev/null; then
+        docker service rm $(docker service ls -q --filter label=danake_role=editor)
       fi
     ;;
 

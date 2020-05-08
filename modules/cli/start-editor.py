@@ -25,7 +25,8 @@ for uid, host in list(zip(UIDS, cycle(HOSTS))):
         image = '{}/editor:{}'.format(DANAKE_REGISTRY, DANAKE_VERSION),
         name = 'editor-{}'.format(uid),
         constraints = ['node.hostname=={}'.format(host)],
+        hostname = 'editor-{}'.format(uid),
         mounts = ['editor-{}-volume:/home/coder/project'.format(uid)],
         networks = ['danake_editor_network'],
-        labels = {'danake': 'editor'}
+        labels = {'danake_role': 'editor', 'danake_host': host}
     )
