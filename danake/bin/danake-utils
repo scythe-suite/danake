@@ -1,4 +1,4 @@
-echo1 "Utils (context: $DANAKE_CONTEXT)..."
+echo1 "Utils (context: $DANAKE_CONTEXT)"
 
 subcommand="$1"
 shift || true
