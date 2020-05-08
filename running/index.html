@@ -274,52 +274,49 @@ issuing</p>
 </div>
 <p>To run the ∂anake system, several <em>services</em> need to be deployed:</p>
 <ul>
-<li>the <code>base</code> <em>stack</em> providing the <a href="https://www.portainer.io/">Portainer</a>
-  monitoring service, and a local <a href="https://docs.docker.com/registry/">Docker
-  Registry</a> required to provide, if needed,
-  development <em>images</em> to all the other involved services;</li>
-<li>a <code>danake</code> stack providing the <strong>router</strong> and <strong>auth</strong> modules;</li>
+<li>the <code>danake</code> <em>stack</em> managing the <strong>router</strong> and <strong>auth</strong> services, plus
+  <a href="https://www.portainer.io/">Portainer</a> monitoring service and it <em>agents</em>;</li>
 <li>a set of separate services providing an instance of the <strong>editor</strong> module per
   student.</li>
 </ul>
-<p>The first stack can be deployed without any further configuration issuing the command</p>
-<pre><code>danake start base
-</code></pre>
-<p>Once this stack is running, the command</p>
-<pre><code>danake utils monitor
-</code></pre>
-<p>can be run to open the monitoring site; the first connection will require to set
-a username and password that <strong>must be kept secret</strong>.</p>
-<p>To run the rest of the services, the <em>auth</em> module needs two configuration
-files, both placed in the <code>confs</code> directory:</p>
+<p>To configure such services, first you need to setup some docker
+<a href="https://docs.docker.com/engine/swarm/secrets/">secrets</a> and
+<a href="https://docs.docker.com/engine/swarm/configs/">configs</a>:</p>
 <ul>
+<li>the SSL/TLS Certificates (in the <code>certs</code> subdirecotry);</li>
 <li>an <code>auth-config.py</code> file defining the following variables:<ul>
 <li><code>SECRET_KEY</code>, a random string that <strong>must be kept secret</strong> used by
   <a href="https://itsdangerous.palletsprojects.com">itsdangerous</a> to sign tokens,</li>
-<li><code>TOKEN_DURATION</code> and <code>COOKIE_DURATION</code> the expiration time for the token and cookie (in seconds).</li>
+<li><code>TOKEN_DURATION</code> and <code>COOKIE_DURATION</code> the expiration time for the token and cookie (in seconds);</li>
 </ul>
 </li>
 <li>a <code>uid2info.tsv</code>
   (in <a href="https://en.wikipedia.org/wiki/Tab-separated_values">tab separated</a> format)
   containing a two-field line per student, the first field being the student ID
   number and the second any string useful to identify the student (for instance
-  her first and last name).</li>
+  her first and last name);</li>
+<li>the <code>cookie2uid.map</code> containing the association between cookies and student
+  IDs.</li>
 </ul>
-<p>Before deploying other services, cookies need to be generated. The command</p>
-<pre><code>danake utils cookies
+<p>The last file is generated from <code>uid2info.tsv</code> and <strong>must be kept secret</strong>; to
+generate it and  and setup all the required configurations, just run</p>
+<pre><code>danake config remove
+danake config create
 </code></pre>
-<p>starting from the list in <code>uid2info.tsv</code> will generate the <code>cookie2uid.map</code> file
-(saved in the <code>confs</code> directory, that <strong>must be kept secret</strong>) containing the
-association between cookies and student IDs used both by the <em>auth</em> module and
-the <em>router</em> one.</p>
-<p>Now the second stack and editor services can be deployed issuing</p>
-<pre><code>danake start backend
-danake start editor
+<p>Once the setup has been completed, it is possible to run the <em>stack</em> with</p>
+<pre><code>danake start danake
+</code></pre>
+<p>and, once it is running, the command</p>
+<pre><code>danake utils monitor
+</code></pre>
+<p>can be run to open the monitoring service; the first connection will require to set
+a username and password that <strong>must be kept secret</strong>.</p>
+<p>If everything looks fine, the editor services can be deployed issuing</p>
+<pre><code>danake start editor
 </code></pre>
 <p>To tear down the system, the correct sequence is</p>
 <pre><code>danake stop editor
-danake stop backend
-danake stop base
+danake stop danake
 </code></pre>
                 
               

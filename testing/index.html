@@ -329,7 +329,7 @@ use different setup is to use <a href="https://docs.docker.com/engine/context/wo
 <pre><code>danake machine context
 </code></pre>
 <p>and switch to it as</p>
-<pre><code>docker context danake-test
+<pre><code>docker context use danake-test
 </code></pre>
 <h2 id="the-local-registry">The local registry<a class="headerlink" href="#the-local-registry" title="Permanent link">#</a></h2>
 <p>In production mode, ∂anake pulls the images needed for the <em>router</em>, <em>auth</em>,
@@ -340,8 +340,11 @@ upload modified development images on a public registry; for this reason, the
 <em>base</em> stack runs a local registry that can be used to distribute development
 images to cluster members participating in the swarm.</p>
 <p>To use such registry, just set the global variable <code>DANAKE_DEBUG</code> to a non empty
-value, for instance as</p>
+value in the <code>danake-config.sh</code> file as</p>
 <pre><code>export DANAKE_DEBUG=1
+</code></pre>
+<p>and run the registry with</p>
+<pre><code>danake start registry
 </code></pre>
 <p>Now, whenever some code or configuration in the <code>modules</code> directory is modified,
 just run</p>
@@ -353,6 +356,10 @@ hand, you can get the images with</p>
 <pre><code>danake images pull
 </code></pre>
 <p>Of course <em>pushing</em> to the official registry is restricted to the project owner.</p>
+<p>At the end of the development cycle, just unset <code>DANAKE_DEBUG</code> and stop the
+registry with</p>
+<pre><code>danake stop registry
+</code></pre>
                 
               
               
