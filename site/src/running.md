@@ -32,23 +32,15 @@ To run the ∂anake system, several *services* need to be deployed:
   monitoring service, and a local [Docker
   Registry](https://docs.docker.com/registry/) required to provide, if needed,
   development *images* to all the other involved services;
-* a `danake` stack providing the **router** and **auth** modules;
+* a `backend` stack providing the **router** and **auth** modules;
 * a set of separate services providing an instance of the **editor** module per
   student.
 
-The first stack can be deployed without any further configuration issuing the command
-
-    danake start base
-
-Once this stack is running, the command
-
-    danake utils monitor
-
-can be run to open the monitoring site; the first connection will require to set
-a username and password that **must be kept secret**.
-
-To run the rest of the services, the *auth* module needs two configuration
-files, both placed in the `confs` directory:
+Before running ∂anake, you need to setup some docker
+[secrets](https://docs.docker.com/engine/swarm/secrets/) and
+[configs](https://docs.docker.com/engine/swarm/configs/) needed by the services:
+the `base` stack depends on the SSL/TLS Certificates, moreover, the *auth*
+module depends on two configuration files, both placed in the `confs` directory:
 
 * an `auth-config.py` file defining the following variables:
     * `SECRET_KEY`, a random string that **must be kept secret** used by
@@ -60,16 +52,30 @@ files, both placed in the `confs` directory:
   number and the second any string useful to identify the student (for instance
   her first and last name).
 
-Before deploying other services, cookies need to be generated. The command
+The *auth* and *router* module, moreover, depend on the `cookie2uid.map` file
+containing the association between random generated cookies and student IDs. To
+generate such file from `uid2info.tsv` and setup all the required
+configurations, just run
 
-    danake utils cookies
+    danake config remove
+    danake config create
 
-starting from the list in `uid2info.tsv` will generate the `cookie2uid.map` file
-(saved in the `confs` directory, that **must be kept secret**) containing the
-association between cookies and student IDs used both by the *auth* module and
-the *router* one.
+this will also saved in the `confs` directory the above mentioned cookie map,
+that **must be kept secret**.
 
-Now the second stack and editor services can be deployed issuing
+The first stack can now be deployed without any further configuration issuing
+the command
+
+    danake start base
+
+Once this stack is running, the command
+
+    danake utils monitor
+
+can be run to open the monitoring site; the first connection will require to set
+a username and password that **must be kept secret**.
+
+Finally the second stack and editor services can be deployed issuing
 
     danake start backend
     danake start editor

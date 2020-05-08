@@ -18,7 +18,7 @@ It is possible to create a `danake-test` *context* for this testing setup using
 
 and switch to it as
 
-    docker context danake-test
+    docker context use danake-test
 
 ## The local registry
 
@@ -32,7 +32,7 @@ upload modified development images on a public registry; for this reason, the
 images to cluster members participating in the swarm.
 
 To use such registry, just set the global variable `DANAKE_DEBUG` to a non empty
-value, for instance as
+value in the `danake-config.sh` file as
 
     export DANAKE_DEBUG=1
 
