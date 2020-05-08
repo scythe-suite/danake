@@ -63,8 +63,8 @@ RUN apt-get update && apt-get install --no-install-recommends -y \
     net-tools \
     && rm -rf /var/lib/apt/lists/*
 
-RUN localedef -i en_US -c -f UTF-8 -A /usr/share/locale/locale.alias en_US.UTF-8
-ENV LANG en_US.utf8
+RUN localedef -i it_IT -c -f UTF-8 -A /usr/share/locale/locale.alias it_IT.UTF-8
+ENV LANG it_IT.UTF-8
 ENV DISABLE_TELEMETRY true
 
 ENV CODE_VERSION="3.2.0"
@@ -91,10 +91,9 @@ RUN bash -c 'for e in $(cat /tmp/extensions.txt); do  code-server --install-exte
 # Setup User Workspace
 RUN mkdir -p ${VSCODE_USER}
 COPY --chown=coder:coder settings.json /home/coder/.local/share/code-server/User/
-RUN mkdir -p /home/coder/project
-WORKDIR /home/coder/project
+WORKDIR /home/coder/
 
 EXPOSE 8080
 
 ENTRYPOINT ["dumb-init", "--"]
-CMD ["code-server", "--bind-addr", "0.0.0.0:8080", "--auth", "none", "/home/coder/project"]
+CMD ["code-server", "--bind-addr", "0.0.0.0:8080", "--auth", "none", "/home/coder"]

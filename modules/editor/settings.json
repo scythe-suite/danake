@@ -4,11 +4,14 @@
     "editor.formatOnPaste": true,
     "editor.formatOnType": true,
     "editor.renderControlCharacters": true,
+    "editor.minimap.enabled": false,
     "files.exclude": {
         "**/.classpath": true,
         "**/.project": true,
         "**/.settings": true,
         "**/.factorypath": true
     },
-    "workbench.startupEditor": "none"
+    "java.errors.incompleteClasspath.severity": "ignore",
+    "workbench.startupEditor": "none",
+    "workbench.colorTheme": "Visual Studio Light"
 }
