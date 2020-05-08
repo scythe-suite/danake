@@ -1,0 +1,32 @@
+echo1 "Starting services (context: $DANAKE_CONTEXT)..."
+
+subcommand="$1"
+if [ -z "$subcommand" ]; then
+  echo "danake: start: known subcommands: base, backend, editor" >&2
+  exit
+fi
+
+case "$subcommand" in
+
+    base)
+      docker stack deploy -c "$DANAKE_HOME/base.yml" base
+    ;;
+
+    backend)
+      mkdir -p "$DANAKE_DATA/"{logs,pictures}
+      docker stack deploy -c "$DANAKE_HOME/danake.yml" danake
+    ;;
+
+    editor)
+      docker run --rm \
+        --mount type=bind,source=$(realpath "$DANAKE_CONFS"),target=/confs \
+        --env DANAKE_REGISTRY \
+        --env DANAKE_VERSION \
+        --mount type=bind,source=/var/run/docker.sock,target=/var/run/docker.sock \
+        $DANAKE_REGISTRY/cli:$DANAKE_VERSION start-editor
+    ;;
+
+    *)
+        echo "danake: start: subcommand '$subcommand' not recognized" >&2
+        exit 1
+esac

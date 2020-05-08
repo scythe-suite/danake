@@ -10,6 +10,22 @@ Such steps are quite standard (albeit complex), so are not described in detail
 here. The [testing setup](testing.md) suggests a simple way to prepare a local
 environment to experiment before installing on dedicated servers.
 
+!!! Contexts
+
+    Observe that [Docker Context](https://docs.docker.com/engine/context/working-with-contexts/)
+    are a very convenient way to refer to different environements; in particular, once
+    a docker swarm has been setup and the host running the manager node has ssh access configured,
+    a context referring to such swarm can be setup as
+
+        docker context create --docker "host=ssh://USER@HOST" CONTEXT
+
+    where `USER` and `HOST` are the credential for the manager host, and `CONTEXT` the name of the context;
+    issuing
+
+        docker context use CONTEXT
+
+    will make all future `docker` commands refer to the manager host.
+
 To run the ∂anake system, several *services* need to be deployed:
 
 * the `base` *stack* providing the [Portainer](https://www.portainer.io/)
@@ -22,12 +38,11 @@ To run the ∂anake system, several *services* need to be deployed:
 
 The first stack can be deployed without any further configuration issuing the command
 
-    ./admin start-base
+    danake start base
 
-(and possibly removed, at the end of the session, with `./admin stop-base`).
 Once this stack is running, the command
 
-    ./admin open-monitor
+    danake utils monitor
 
 can be run to open the monitoring site; the first connection will require to set
 a username and password that **must be kept secret**.
@@ -47,7 +62,7 @@ files, both placed in the `confs` directory:
 
 Before deploying other services, cookies need to be generated. The command
 
-    ./admin generate-cookies
+    danake utils cookies
 
 starting from the list in `uid2info.tsv` will generate the `cookie2uid.map` file
 (saved in the `confs` directory, that **must be kept secret**) containing the
@@ -56,14 +71,11 @@ the *router* one.
 
 Now the second stack and editor services can be deployed issuing
 
-    ./admin start
-    ./admin start-editor
-
-(such services can be removed using respectively `./admin stop-base` and
-`./admin stop-editor`).
+    danake start backend
+    danake start editor
 
 To tear down the system, the correct sequence is
 
-    ./admin stop-editor
-    ./admin stop
-    ./admin stop-base
+    danake stop editor
+    danake stop backend
+    danake stop base

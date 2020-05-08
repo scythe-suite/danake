@@ -1,0 +1,39 @@
+echo1 "Images management (context: $DANAKE_CONTEXT)..."
+
+subcommand="$1"
+shift || true
+if [ -z "$subcommand" ]; then
+  echo "danake: images: known subcommands: build, push, pull" >&2
+  exit
+fi
+
+case "$subcommand" in
+
+    build)
+      echo2 Build
+      for img in $(ls "$DANAKE_HOME/../modules"); do
+        docker build "$DANAKE_HOME/../modules/$img" \
+          --tag "$DANAKE_REGISTRY/$img:latest" \
+          --tag "$DANAKE_REGISTRY/$img:$DANAKE_VERSION"
+      done
+    ;;
+
+    push)
+      echo2 Push
+      for img in $(ls "$DANAKE_HOME/../modules"); do
+        docker push "$DANAKE_REGISTRY/$img:$DANAKE_VERSION"
+        docker push "$DANAKE_REGISTRY/$img:latest"
+      done
+    ;;
+
+    pull)
+      echo2 Pull
+      for img in $(ls "$DANAKE_HOME/../modules"); do
+        docker pull "$DANAKE_REGISTRY/$img:$DANAKE_VERSION"
+      done
+    ;;
+
+    *)
+        echo "danake: images: subcommand '$subcommand' not recognized" >&2
+        exit 1
+esac

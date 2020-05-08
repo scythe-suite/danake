@@ -1,6 +1,5 @@
 .envrc
-site/site/
 confs/
 data/
-docker/auth-app/da/
-docker/auth-app/run.py
+local/
+site/site/

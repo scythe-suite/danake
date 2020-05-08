@@ -1,0 +1,28 @@
+echo1 "Stopping services (context: $DANAKE_CONTEXT)..."
+
+subcommand="$1"
+if [ -z "$subcommand" ]; then
+  echo "danake: stop: known subcommands: base, backend, editor" >&2
+  exit
+fi
+
+case "$subcommand" in
+
+    base)
+      docker stack rm base
+    ;;
+
+    backend)
+      docker stack rm danake
+    ;;
+
+    editor)
+      if docker service ls --filter label=danake=editor | grep editor- >/dev/null; then
+        docker service rm $(docker service ls -q --filter label=danake=editor)
+      fi
+    ;;
+
+    *)
+        echo "danake: stop: subcommand '$subcommand' not recognized" >&2
+        exit 1
+esac

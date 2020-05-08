@@ -5,18 +5,20 @@ Machine](https://docs.docker.com/machine/) to setup an environment based on a
 set of virtual machines. Once installed the tool and the dependencies (most
 notably [VirtualBox](https://www.virtualbox.org/)), just issue
 
-    ./admin dm-create-vms
-    ./admin dm-setup-swarm
+    danake machine create
+    danake machine setup
 
 to create the virtual machines and setup the swarm running on them; this step
-(unless the hosts are rebooted) need not be repeated.
+(unless the hosts are rebooted) need not be repeated; a very convenient way to
+use different setup is to use [Docker Context](https://docs.docker.com/engine/context/working-with-contexts/).
 
-Once the VMs are ready, to connect your local docker command with the remote
-daemon on the master virtual machine, use
+It is possible to create a `danake-test` *context* for this testing setup using
 
-    eval $(./admin dm-env)
+    danake machine context
 
-to setup the needed environment variables in any new shell you are about to use.
+and switch to it as
+
+    docker context danake-test
 
 ## The local registry
 
@@ -37,7 +39,13 @@ value, for instance as
 Now, whenever some code or configuration in the `modules` directory is modified,
 just run
 
-    ./admin/build
-    ./admin/push
+    danake images build
+    danake images push
 
-to build the new images and upload them to the local registry.
+to build the new images and upload them to the local registry; on the other
+hand, you can get the images with
+
+    danake images pull
+
+Of course *pushing* to the official registry is restricted to the project owner.
+
