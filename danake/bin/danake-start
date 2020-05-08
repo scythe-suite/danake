@@ -13,7 +13,6 @@ case "$subcommand" in
     ;;
 
     backend)
-      mkdir -p "$DANAKE_DATA/"{logs,pictures}
       docker stack deploy -c "$DANAKE_HOME/danake.yml" danake
     ;;
 

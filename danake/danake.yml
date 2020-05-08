@@ -14,47 +14,52 @@ services:
       - target: 443
         published: 443
     volumes:
-      - type: bind
-        source: "${DANAKE_DATA}/logs"
+      - type: volume
+        source: router_logs
         target: /logs
-      - type: bind
-        source: "${DANAKE_CONFS}/cookie2uid.map"
-        target: /cookie2uid.map
     networks:
       - backend_network
     secrets:
       - fullchain.pem
       - privkey.pem
       - dhparam.pem
+      - source: cookie2uid.map
+        target: /cookie2uid.map
 
   auth:
     image: "${DANAKE_REGISTRY}/auth:${DANAKE_VERSION:-latest}"
-    user: "${DANAKE_UID}:${DANAKE_GID}"
     deploy:
       mode: replicated
       replicas: 1
       placement:
         constraints: [node.role == manager]
     volumes:
-      - type: bind
-        source: "${DANAKE_DATA}/pictures"
+      - type: volume
+        source: auth_pictures
         target: /pictures
-      - type: bind
-        source: "${DANAKE_CONFS}/uid2info.tsv"
-        target: /uid2info.tsv
-      - type: bind
-        source: "${DANAKE_CONFS}/cookie2uid.map"
-        target: /cookie2uid.map
     networks:
       - backend_network
+    configs:
+      - source: uid2info.tsv
+        target: /uid2info.tsv
     secrets:
       - source: auth-config.py
         target: /config.py
+      - source: cookie2uid.map
+        target: /cookie2uid.map
 
 networks:
   backend_network:
     driver: overlay
     attachable: true
+
+configs:
+  uid2info.tsv:
+    file: "${DANAKE_CONFS}/uid2info.tsv"
+
+volumes:
+  router_logs:
+  auth_pictures:
 
 secrets:
   fullchain.pem:
@@ -65,3 +70,5 @@ secrets:
     file: "${DANAKE_CONFS}/certs/dhparam.pem"
   auth-config.py:
     file: "${DANAKE_CONFS}/auth-config.py"
+  cookie2uid.map:
+    file: "${DANAKE_CONFS}/cookie2uid.map"
