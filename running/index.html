@@ -258,6 +258,20 @@
 <p>Such steps are quite standard (albeit complex), so are not described in detail
 here. The <a href="../testing/">testing setup</a> suggests a simple way to prepare a local
 environment to experiment before installing on dedicated servers.</p>
+<div class="admonition contexts">
+<p class="admonition-title">Contexts</p>
+<p>Observe that <a href="https://docs.docker.com/engine/context/working-with-contexts/">Docker Context</a>
+are a very convenient way to refer to different environements; in particular, once
+a docker swarm has been setup and the host running the manager node has ssh access configured,
+a context referring to such swarm can be setup as</p>
+<pre><code>docker context create --docker "host=ssh://USER@HOST" CONTEXT
+</code></pre>
+<p>where <code>USER</code> and <code>HOST</code> are the credential for the manager host, and <code>CONTEXT</code> the name of the context;
+issuing</p>
+<pre><code>docker context use CONTEXT
+</code></pre>
+<p>will make all future <code>docker</code> commands refer to the manager host.</p>
+</div>
 <p>To run the ∂anake system, several <em>services</em> need to be deployed:</p>
 <ul>
 <li>the <code>base</code> <em>stack</em> providing the <a href="https://www.portainer.io/">Portainer</a>
@@ -269,11 +283,10 @@ environment to experiment before installing on dedicated servers.</p>
   student.</li>
 </ul>
 <p>The first stack can be deployed without any further configuration issuing the command</p>
-<pre><code>./admin start-base
+<pre><code>danake start base
 </code></pre>
-<p>(and possibly removed, at the end of the session, with <code>./admin stop-base</code>).
-Once this stack is running, the command</p>
-<pre><code>./admin open-monitor
+<p>Once this stack is running, the command</p>
+<pre><code>danake utils monitor
 </code></pre>
 <p>can be run to open the monitoring site; the first connection will require to set
 a username and password that <strong>must be kept secret</strong>.</p>
@@ -293,22 +306,20 @@ files, both placed in the <code>confs</code> directory:</p>
   her first and last name).</li>
 </ul>
 <p>Before deploying other services, cookies need to be generated. The command</p>
-<pre><code>./admin generate-cookies
+<pre><code>danake utils cookies
 </code></pre>
 <p>starting from the list in <code>uid2info.tsv</code> will generate the <code>cookie2uid.map</code> file
 (saved in the <code>confs</code> directory, that <strong>must be kept secret</strong>) containing the
 association between cookies and student IDs used both by the <em>auth</em> module and
 the <em>router</em> one.</p>
 <p>Now the second stack and editor services can be deployed issuing</p>
-<pre><code>./admin start
-./admin start-editor
+<pre><code>danake start backend
+danake start editor
 </code></pre>
-<p>(such services can be removed using respectively <code>./admin stop-base</code> and
-<code>./admin stop-editor</code>).</p>
 <p>To tear down the system, the correct sequence is</p>
-<pre><code>./admin stop-editor
-./admin stop
-./admin stop-base
+<pre><code>danake stop editor
+danake stop backend
+danake stop base
 </code></pre>
                 
               

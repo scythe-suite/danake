@@ -319,16 +319,18 @@
 Machine</a> to setup an environment based on a
 set of virtual machines. Once installed the tool and the dependencies (most
 notably <a href="https://www.virtualbox.org/">VirtualBox</a>), just issue</p>
-<pre><code>./admin dm-create-vms
-./admin dm-setup-swarm
+<pre><code>danake machine create
+danake machine setup
 </code></pre>
 <p>to create the virtual machines and setup the swarm running on them; this step
-(unless the hosts are rebooted) need not be repeated.</p>
-<p>Once the VMs are ready, to connect your local docker command with the remote
-daemon on the master virtual machine, use</p>
-<pre><code>eval $(./admin dm-env)
+(unless the hosts are rebooted) need not be repeated; a very convenient way to
+use different setup is to use <a href="https://docs.docker.com/engine/context/working-with-contexts/">Docker Context</a>.</p>
+<p>It is possible to create a <code>danake-test</code> <em>context</em> for this testing setup using</p>
+<pre><code>danake machine context
 </code></pre>
-<p>to setup the needed environment variables in any new shell you are about to use.</p>
+<p>and switch to it as</p>
+<pre><code>docker context danake-test
+</code></pre>
 <h2 id="the-local-registry">The local registry<a class="headerlink" href="#the-local-registry" title="Permanent link">#</a></h2>
 <p>In production mode, ∂anake pulls the images needed for the <em>router</em>, <em>auth</em>,
 <em>editor</em> and <em>cli</em> services from <a href="https://hub.docker.com/">Docker Hub</a>; such
@@ -343,10 +345,14 @@ value, for instance as</p>
 </code></pre>
 <p>Now, whenever some code or configuration in the <code>modules</code> directory is modified,
 just run</p>
-<pre><code>./admin/build
-./admin/push
+<pre><code>danake images build
+danake images push
 </code></pre>
-<p>to build the new images and upload them to the local registry.</p>
+<p>to build the new images and upload them to the local registry; on the other
+hand, you can get the images with</p>
+<pre><code>danake images pull
+</code></pre>
+<p>Of course <em>pushing</em> to the official registry is restricted to the project owner.</p>
                 
               
               
