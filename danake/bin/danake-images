@@ -11,7 +11,15 @@ case "$subcommand" in
 
     build)
       echo2 Build
-      for img in $(ls "$DANAKE_HOME/../modules"); do
+      docker build "$DANAKE_HOME/../modules/cli" \
+        --tag "$DANAKE_REGISTRY/cli:latest" \
+        --tag "$DANAKE_REGISTRY/cli:$DANAKE_VERSION"
+      AUTHORIZED_KEYS=$(docker run --rm -it --entrypoint '' "$DANAKE_REGISTRY/cli" cat /home/cli/.ssh/id_rsa.pub)
+      docker build "$DANAKE_HOME/../modules/editor" \
+        --build-arg authorized_keys="$AUTHORIZED_KEYS" \
+        --tag "$DANAKE_REGISTRY/editor:latest" \
+        --tag "$DANAKE_REGISTRY/editor:$DANAKE_VERSION"
+      for img in auth router; do
         docker build "$DANAKE_HOME/../modules/$img" \
           --tag "$DANAKE_REGISTRY/$img:latest" \
           --tag "$DANAKE_REGISTRY/$img:$DANAKE_VERSION"

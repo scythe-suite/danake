@@ -1,0 +1,7 @@
+NoHostAuthenticationForLocalhost yes
+StrictHostKeyChecking no
+UserKnownHostsFile /dev/null
+LogLevel ERROR
+
+Host *
+  User coder

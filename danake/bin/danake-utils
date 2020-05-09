@@ -3,19 +3,35 @@ echo1 "Utils (context: $DANAKE_CONTEXT)"
 subcommand="$1"
 shift || true
 if [ -z "$subcommand" ]; then
-  echo "danake: utils: known subcommands: exec, monitor, cookies, tokens, ufw" >&2
+  echo "danake: utils: known subcommands: status, exec, cli, monitor, tokens, ufw" >&2
   exit
 fi
 
 case "$subcommand" in
 
+    status)
+      echo2 "Danake status"
+      echo3 "Nodes"
+      docker node ls
+      echo3 "Stacks"
+      docker stack ls
+      echo3 "Services"
+      docker service ls
+    ;;
+
     exec)
+      echo2 "Determining host and container id"
       uid=$1
       shift || true
       host=$(docker service inspect editor-$uid -f '{{.Spec.Labels.danake_host}}')
-      echo2 "Connecting via ssh to docker agent on $host"
+      echo3 "Connecting via ssh to docker agent on $host"
       id=$(docker service ps editor-$uid --no-trunc --filter "name=editor-${uid}.1" --filter 'desired-state=running' --format '{{.ID}}')
       docker -H "ssh://$host" exec -it "editor-${uid}.1.${id}" "$@"
+    ;;
+
+    cli)
+      echo2 "Running an instance of the cli on the editor network"
+      docker run -it --rm --entrypoint '' --network danake_editor_network 127.0.0.1:5000/cli bash
     ;;
 
     monitor)
