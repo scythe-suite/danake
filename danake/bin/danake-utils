@@ -31,7 +31,10 @@ case "$subcommand" in
 
     cli)
       echo2 "Running an instance of the cli on the editor network"
-      docker run -it --rm --entrypoint '' --network danake_editor_network 127.0.0.1:5000/cli bash
+      docker run -it --rm --name cli --entrypoint '' \
+        --network danake_editor_network --hostname cli \
+        --mount type=volume,source=danake_cli,target=/home/cli/data \
+        127.0.0.1:5000/cli bash
     ;;
 
     monitor)

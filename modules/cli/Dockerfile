@@ -18,7 +18,7 @@ USER cli
 
 ENV SHELL=/bin/bash
 
-RUN mkdir /home/cli/.ssh && \
+RUN mkdir /home/cli/.ssh /home/cli/data && \
     ssh-keygen -qf /home/cli/.ssh/id_rsa -P '' -C 'danake_admin' && \
     chmod go= -R /home/cli
 
