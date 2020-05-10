@@ -25,6 +25,7 @@ RUN mkdir /home/cli/.ssh /home/cli/data && \
 COPY ssh_config /home/cli/.ssh/config
 COPY generate-cookies.py /home/cli/generate-cookies
 COPY start-editor.py /home/cli/start-editor
+COPY reaper-sign.py /home/cli/reaper-sign
 
 WORKDIR /home/cli
 

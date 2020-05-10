@@ -11,14 +11,17 @@ case "$subcommand" in
 
     build)
       echo2 Build
+      echo3 Building cli and extracting ssh public key
       docker build "$DANAKE_HOME/../modules/cli" \
         --tag "$DANAKE_REGISTRY/cli:latest" \
         --tag "$DANAKE_REGISTRY/cli:$DANAKE_VERSION"
       AUTHORIZED_KEYS=$(docker run --rm -it --entrypoint '' "$DANAKE_REGISTRY/cli" cat /home/cli/.ssh/id_rsa.pub)
+      echo3 Building editor and importing ssh public key
       docker build "$DANAKE_HOME/../modules/editor" \
         --build-arg authorized_keys="$AUTHORIZED_KEYS" \
         --tag "$DANAKE_REGISTRY/editor:latest" \
         --tag "$DANAKE_REGISTRY/editor:$DANAKE_VERSION"
+      echo3 Building auth and router
       for img in auth router; do
         docker build "$DANAKE_HOME/../modules/$img" \
           --tag "$DANAKE_REGISTRY/$img:latest" \
