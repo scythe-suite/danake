@@ -39,7 +39,8 @@ def tokens():
     auth = request.headers.get('X-DANAKE-AUTH')
     if auth is None or auth != DANAKE_AUTH: abort(401)
     return Response(
-      '\n'.join('{}\t{}'.format(uid, USTS.dumps(uid)) for uid in UID2COOKIE.keys())
+      '\n'.join('{}\t{}'.format(uid, USTS.dumps(uid)) for uid in UID2COOKIE.keys()),
+      mimetype = 'text/plain'
     )
 
 @app.route('/stats')
