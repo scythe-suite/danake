@@ -50,6 +50,17 @@ services:
       - source: cookie2uid.map
         target: /cookie2uid.map
 
+  mail:
+    image: "${DANAKE_REGISTRY}/mail:${DANAKE_VERSION:-latest}"
+    deploy:
+      mode: replicated
+      replicas: 1
+    networks:
+      - editor_network
+    secrets:
+      - source: mail-config.py
+        target: /config.py
+
   portainer:
     image: portainer/portainer
     depends_on:
@@ -122,6 +133,9 @@ secrets:
   auth-config.py:
     external: true
     name: danake_auth_config
+  mail-config.py:
+    external: true
+    name: danake_mail_config
   cookie2uid.map:
     external: true
     name: danake_cookie2uid

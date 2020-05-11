@@ -64,6 +64,16 @@ case "$subcommand" in
       curl -H "X-DANAKE-AUTH: $SECRET_KEY" https://$DANAKE_MANAGER_HOST/da/tokens
     ;;
 
+    mail)
+      echo2 "Computing token"
+      export name=$1
+      shift || true
+      export mail=$1
+      shift || true
+      eval $(grep SECRET_KEY "$DANAKE_CONFS/mail-config.py" | tr -d ' ')
+      curl -H "X-DANAKE-AUTH: $SECRET_KEY" -d "name=$name" -d "mail=$mail" https://$DANAKE_MANAGER_HOST/mm/token
+    ;;
+
     ufw)
       echo2 "Firewall rules"
       echo -e "Please issue the following commands\n"

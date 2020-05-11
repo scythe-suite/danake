@@ -1,4 +1,4 @@
-export DANAKE_VERSION="0.3.1-beta"
+export DANAKE_VERSION="0.4.0-beta"
 
 export DANAKE_CONFS="$(realpath -eL $DANAKE_HOME/../confs)"
 

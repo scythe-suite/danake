@@ -12,7 +12,7 @@ case "$subcommand" in
     remove)
       echo2 "Cleaning up everything"
       docker config rm danake_uid2info || true
-      for secret in fullchain privkey dhparam auth_config cookie2uid; do
+      for secret in fullchain privkey dhparam auth_config mail_config cookie2uid; do
         docker secret rm danake_${secret} || true
       done
     ;;
@@ -32,6 +32,7 @@ case "$subcommand" in
       docker secret create danake_privkey "${DANAKE_CONFS}/certs/privkey.pem"
       docker secret create danake_dhparam "${DANAKE_CONFS}/certs/dhparam.pem"
       docker secret create danake_auth_config "${DANAKE_CONFS}/auth-config.py"
+      docker secret create danake_mail_config "${DANAKE_CONFS}/mail-config.py"
       docker secret create danake_cookie2uid "${DANAKE_CONFS}/cookie2uid.map"
     ;;
 
