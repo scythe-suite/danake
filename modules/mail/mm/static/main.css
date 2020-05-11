@@ -6,8 +6,14 @@
     border-radius: .8em;
 }
 
+div .reason {
+  border: 2pt dotted orange;
+  margin-top: .5em;
+  padding: .5em;
+}
+
 .mail-msg {
-  border: 1pt solid black;
+  border: 1pt solid gray;
   border-radius: .8em;
   padding: 5px;
 }

@@ -31,7 +31,12 @@ function submit(evt, mode) {
     responseBodyElement.innerHTML = json.body;
     modalElement.style.display = 'block';
   })
-  .catch(error => console.log('fetch error:', error));
+  .catch(error => {
+    console.log('fetch error:', error);
+    responseTitleElement.innerHTML = "Unexpected error";
+    responseBodyElement.innerHTML = "Encountered the following error while processing the server reply:\n<pre>" + error + "</pre>";
+    modalElement.style.display = 'block';
+  });
   evt.preventDefault();
 }
 

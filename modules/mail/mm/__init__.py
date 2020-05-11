@@ -1,4 +1,4 @@
-from csv import reader
+from csv import reader, Sniffer
 from os import environ
 from pathlib import Path
 import re
@@ -22,17 +22,19 @@ USTS = URLSafeTimedSerializer(app.config['SECRET_KEY'])
 DANAKE_AUTH = environ.get('DANAKE_AUTH', app.config['SECRET_KEY'])
 
 def data2dicts(data):
-    badre = re.compile(r'[^A-Za-z0-9]+')
-    headers, *rows = list(reader((_.strip() for _ in data.splitlines() if _.strip()), delimiter = '\t'))
-    headers = list(map(lambda _: badre.sub('', _).lower(), headers))
-    num_headers = len(headers)
-    dicts = []
-    for n, row in enumerate(rows, 1):
-      if len(row) != num_headers: raise ValueError('Row {} contains {} fields, while there are {} headers.'.format(n, len(row), num_headers))
-      d = dict(zip(headers, row))
-      d.update(dict(enumerate(row)))
-      dicts.append(d)
-    return dicts
+  lines = list(data.splitlines())
+  if len(lines) < 2: raise ValueError("Merge data must contain at least two lines: one header and at least one record.")
+  badre = re.compile(r'[^A-Za-z0-9]+')
+  headers, *rows = list(reader((_.strip() for _ in lines if _.strip()), delimiter = '\t'))
+  headers = list(map(lambda _: badre.sub('', _).lower(), headers))
+  num_headers = len(headers)
+  dicts = []
+  for n, row in enumerate(rows, 1):
+    if len(row) != num_headers: raise ValueError('Row {} contains {} fields, while there are {} headers.'.format(n, len(row), num_headers))
+    d = dict(zip(headers, row))
+    d.update(dict(enumerate(row)))
+    dicts.append(d)
+  return dicts
 
 def make_message(dct, sender, subject, text):
   try:
@@ -49,7 +51,7 @@ def make_message(dct, sender, subject, text):
   return Message(sender = sender, recipients = [mail], body = body, subject = subject)
 
 @app.route('/token', methods = ['POST'])
-def tokens():
+def token():
     auth = request.headers.get('X-DANAKE-AUTH')
     name = request.form.get('name', None)
     mail = request.form.get('mail', None)
@@ -79,24 +81,28 @@ def index(token = None):
     if request.method == 'GET':
       return render_template('index.html', status = status, info = info)
     else:
-      print(request.form)
       subject = request.form['subject']
       if not subject: subject = '[∂anake]: Mail merge from {}'.format(info['name'])
       text = request.form['text']
-      if not text: return {'title': 'Error', 'body': 'Please provide the text for your message!'}
-      if not request.form['data']: return {'title': 'Error', 'body': 'Please provide the merge data for your mails!'}
+      if not text: return {'title': 'Missing data', 'body': 'Please provide the text for your message!'}
+      if not request.form['data']: return {'title': 'Missing data', 'body': 'Please provide the merge data for your mails!'}
       try:
         data = data2dicts(request.form['data'])
-      except Exception as err:
-        return {'title': 'Error', 'body': str(err)}
+      except (Exception, OSError) as err:
+        return {'title': 'Error while processing merge data', 'body': 'The following error has been reported while processing merge data:\n<div class="reason">{}</div>'.format(err)}
+      try:
+        msgs = [make_message(dct, (info['name'], info['mail']), subject, text) for dct in data]
+      except (Exception, OSError) as err:
+        return {'title': 'Error while merging', 'body': 'The following error has been reported while preparing messages:\n<div class="reason">{}</div>'.format(err)}
       if request.form['mode'] == 'send':
-        with mail.connect() as conn:
-          for dct in data: conn.send(make_message(dct, (info['name'], info['mail']), subject, text))
+        try:
+          with mail.connect() as conn:
+            for msg in msgs: conn.send(msg)
+        except (Exception, OSError) as err:
+          return {'title': 'Error while sending', 'body': 'The following error has been reported while sending:\n<div class="reason">{}</div>'.format(err)}
         return {'title': 'Success', 'body': 'Sent {} emails.'.format(len(data))}
       else:
-        body = ['First (at most) three of {} message(s):'.format(len(data))]
-        for dct in data[:3]:
-          msg = make_message(dct, (info['name'], info['mail']), subject, text)
-          body.append('<pre class="mail-msg">{}</pre>'.format(msg.as_string()))
-        mail.send(msg)
-        return {'title': 'Example messages', 'body': '\n'.join(body)}
+        examples = '\n'.join(['First (at most) three of {} message(s):'.format(len(data))] + [
+          '<pre class="mail-msg">{}</pre>'.format(msg.as_string()) for msg in msgs[:3]
+        ])
+        return {'title': 'Example messages', 'body': examples}
