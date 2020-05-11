@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>{% block title %}∂anake - mailer{% endblock %}</h1>
+
+{% if status == 'OK' %}
+
+<div id="modal" class="modal">
+  <div class="modal-content">
+    <h2 id="response-title"></h2>
+    <div class="modal-container">
+      <div id="response-body"></div>
+    </div>
+  </div>
+</div>
+
+<form class="pure-form pure-form-aligned" id="form">
+  <fieldset>
+    <div class="pure-control-group">
+        <label for="sender">Sender</label>
+        <input class="pure-input-1-2" type="emai" id="sender" placeholder="{{info.name}} <{{info.mail}}>" disabled=""/>
+    </div>
+    <div class="pure-control-group">
+        <label for="subject">Subject</label>
+        <input class="pure-input-1-2" type="text" name="subject" id="subject" placeholder="[∂anake]: Mail merge for {lastname}" />
+    </div>
+    <div class="pure-control-group">
+        <label for="text">Message</label>
+        <textarea rows="16" name="text" id="text" class="pure-input-1-2" placeholder="Dear {firstname}, …"></textarea>
+    </div>
+    <div class="pure-control-group">
+      <label>&nbsp;</label>
+      <button id="test" class="pure-button pure-input-1-4 pure-button-success">Test</button>
+      <button id="send" class="pure-button pure-input-1-4 pure-button-warning">Send!</button>
+    </div>
+    <div class="pure-control-group">
+      <label for="data">Merge data</label>
+      <textarea rows="16" name="data" id="data" class="pure-input-1-2" placeholder="Tab-separated data, with headers on the first row…"></textarea>
+    </div
+  ></fieldset>
+</form>
+
+<script src="{{ url_for('static', filename = 'main.js') }}"></script>
+
+{% else %}
+{% if status == 'MISSING_TOKEN' %}
+<div class="pure-alert-error pure-alert">
+    The <em>token</em> is <strong>missing</strong> in your URL.
+</div>
+{% elif status == 'EXPIRED_TOKEN' %}
+<div class="pure-alert-warning pure-alert">
+    The <em>token</em> in your URL is <strong>expired</strong>, contact the service administrator if this should not be the case.
+</div>
+{% elif status == 'INVALID_TOKEN' %}
+<div class="pure-alert-error pure-alert">
+    The <em>token</em> in your URL is <strong>invalid</strong>, contact the service administrator this should not be the case.
+</div>
+{% endif %}
+{% endif %}
+
+</form>{% endblock %}
