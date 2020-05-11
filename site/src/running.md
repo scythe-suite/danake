@@ -8,7 +8,8 @@ Two preliminary steps to run ∂anake are:
 
 Such steps are quite standard (albeit complex), so are not described in detail
 here. The [testing setup](testing.md) suggests a simple way to prepare a local
-environment to experiment before installing on dedicated servers.
+environment to experiment before installing the clustering environment on
+dedicated servers.
 
 !!! Contexts
 

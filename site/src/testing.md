@@ -10,7 +10,8 @@ notably [VirtualBox](https://www.virtualbox.org/)), just issue
 
 to create the virtual machines and setup the swarm running on them; this step
 (unless the hosts are rebooted) need not be repeated; a very convenient way to
-use different setup is to use [Docker Context](https://docs.docker.com/engine/context/working-with-contexts/).
+use different setup is to use [Docker
+Context](https://docs.docker.com/engine/context/working-with-contexts/).
 
 It is possible to create a `danake-test` *context* for this testing setup using
 
