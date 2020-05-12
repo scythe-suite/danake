@@ -69,16 +69,19 @@ def token():
 def index(token = None):
     status = 'OK'
     info = None
-    if not token:
-        status = 'MISSING_TOKEN'
+    if token == 'test':
+      status = 'OK'
+      info = {'name': 'Test Account', 'mail': 'test@email.me'}
+    elif not token:
+      status = 'MISSING_TOKEN'
     else:
-        try:
-            info = USTS.loads(token, max_age = app.config['TOKEN_DURATION'])
-        except SignatureExpired:
-            status = 'EXPIRED_TOKEN'
-        except BadSignature:
-            status = 'INVALID_TOKEN'
-    if request.method == 'GET':
+      try:
+          info = USTS.loads(token, max_age = app.config['TOKEN_DURATION'])
+      except SignatureExpired:
+          status = 'EXPIRED_TOKEN'
+      except BadSignature:
+          status = 'INVALID_TOKEN'
+    if status != 'OK' or request.method == 'GET':
       return render_template('index.html', status = status, info = info)
     else:
       subject = request.form['subject']
@@ -95,6 +98,8 @@ def index(token = None):
       except (Exception, OSError) as err:
         return {'title': 'Error while merging', 'body': 'The following error has been reported while preparing messages:\n<div class="reason">{}</div>'.format(err)}
       if request.form['mode'] == 'send':
+        if token == 'test':
+          return {'title': 'Test', 'body': 'It you had a valid token, {} emails would have been sent.'.format(len(data))}
         try:
           with mail.connect() as conn:
             for msg in msgs: conn.send(msg)
