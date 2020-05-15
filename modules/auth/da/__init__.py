@@ -4,7 +4,9 @@ from pathlib import Path
 
 import click
 from flask import Flask, Response, abort, jsonify, redirect, render_template, request, send_file, make_response
+from jinja2 import contextfilter, Template
 from itsdangerous import BadSignature, SignatureExpired, URLSafeTimedSerializer
+from markupsafe import Markup
 
 app = Flask(__name__, instance_relative_config = True)
 app.config.from_mapping(
@@ -12,12 +14,24 @@ app.config.from_mapping(
     PICTURES_FOLDER = '/pictures',
     UID2INFO_PATH = '/uid2info.tsv',
     COOKIE2UID_PATH = '/cookie2uid.map',
+    MESSAGES = { # the following are jinja2 templates
+      'OK': '<p>Dear <samp>{{info}}</samp> please upload your picture, you can shot as many time you want, but send just once…</p>',
+      'MISSING_TOKEN': 'The <em>token</em> is <strong>missing</strong> in your URL.',
+      'EXPIRED_TOKEN': 'The <em>token</em> in your URL is <strong>expired</strong>, contact the service administrator if this should not be the case.',
+      'UNREGISTERED_UID': 'The <em>token</em> in your URL corresponds to an <strong>unregistered</strong> <em>user id </em>, contact the service administrator if this should not be the case.',
+      'INVALID_TOKEN': 'The <em>token</em> in your URL is <strong>invalid</strong>, contact the service administrator this should not be the case.'
+    },
     SECRET_KEY = 'dev-only-key',
     COOKIE_DURATION = 60 * 60 * 4, # 4h
     TOKEN_DURATION = 60 * 60 * 5 # 5h
 )
 app.config.from_pyfile('config.py', silent = True)
 app.config.from_pyfile('/config.py', silent = True)
+
+@contextfilter
+def render_message(context, value):
+    return Markup(Template(value).render(context))
+app.jinja_env.filters['render_message'] = render_message
 
 for key in 'PICTURES_FOLDER', 'UID2INFO_PATH', 'COOKIE2UID_PATH':
   if not app.config[key].startswith('/'):
@@ -116,4 +130,6 @@ def index(token = None):
           return jsonify({
             'status': 'ok',
             'cookie': f'danake_routing={UID2COOKIE[uid]}; Max-Age={app.config["COOKIE_DURATION"]}; Path=/; Secure; SameSite=Strict' })
-    return render_template('index.html', status = status, info = info)
+    return render_template('index.html', status = status, info = info, messages = app.config['MESSAGES'])
+
+
