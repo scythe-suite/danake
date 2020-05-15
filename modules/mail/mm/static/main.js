@@ -5,38 +5,37 @@ const modalElement = document.getElementById('modal');
 const responseTitleElement = document.getElementById('response-title');
 const responseBodyElement = document.getElementById('response-body');
 
-window.onclick = function(e){
-  if (e.target == modal) modal.style.display = "none";
-}
+window.onclick = e => {
+  if (e.target == modal) modal.style.display = 'none';
+};
 
-document.onkeydown = function(evt) {
+document.onkeydown = evt => {
   evt = evt || window.event;
   let isEscape = false;
-  if ("key" in evt) isEscape = (evt.key === "Escape" || evt.key === "Esc");
+  if ('key' in evt) isEscape = (evt.key === 'Escape' || evt.key === 'Esc');
   else isEscape = (evt.keyCode === 27);
-  if (isEscape) modal.style.display = "none";
+  if (isEscape) modal.style.display = 'none';
 };
 
 function submit(evt, mode) {
-  let formData =  new FormData(formElement);
+  let formData = new FormData(formElement);
   formData.append('mode', mode);
   fetch('', {
-    method: 'POST',
-    body: formData
-  })
-  .then(response => response.json())
-  .then(json => {
-    console.log('got:', json);
-    responseTitleElement.innerHTML = json.title;
-    responseBodyElement.innerHTML = json.body;
-    modalElement.style.display = 'block';
-  })
-  .catch(error => {
-    console.log('fetch error:', error);
-    responseTitleElement.innerHTML = "Unexpected error";
-    responseBodyElement.innerHTML = "Encountered the following error while processing the server reply:\n<pre>" + error + "</pre>";
-    modalElement.style.display = 'block';
-  });
+      method: 'POST',
+      body: formData
+    })
+    .then(response => response.json())
+    .then(json => {
+      responseTitleElement.innerHTML = json.title;
+      responseBodyElement.innerHTML = json.body;
+      modalElement.style.display = 'block';
+    })
+    .catch(error => {
+      console.log('fetch error:', error);
+      responseTitleElement.innerHTML = 'Unexpected error';
+      responseBodyElement.innerHTML = 'Encountered the following error while processing the server reply:\n<pre>' + error + '</pre>';
+      modalElement.style.display = 'block';
+    });
   evt.preventDefault();
 }
 
