@@ -6,6 +6,9 @@
   border-radius: .8em;
 }
 
+video, img {
+  transform: rotateY(180deg);
+}
 
 /* thumbnail */
 
