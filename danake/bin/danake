@@ -1,8 +1,8 @@
 #!/bin/bash -e
 
-echo1() { echo -e "\033[34m*** $@...\033[0m"; }
-echo2() { echo -e "\033[31m** $@...\033[0m"; }
-echo3() { echo -e "\033[32m* $@...\033[0m"; }
+echo1() { echo -e "\033[34m*** $@...\033[0m" >&2; }
+echo2() { echo -e "\033[31m** $@...\033[0m" >&2; }
+echo3() { echo -e "\033[32m* $@...\033[0m" >&2; }
 
 if [ -z "$DANAKE_HOME" ]; then
   echo "danake: please set the required environment variables sourcing setenv.sh" >&2
