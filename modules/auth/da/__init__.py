@@ -15,6 +15,7 @@ app.config.from_mapping(
     UID2INFO_PATH = '/uid2info.tsv',
     COOKIE2UID_PATH = '/cookie2uid.map',
     MESSAGES = { # the following are jinja2 templates
+      'CAMERA_ERROR': 'Please allow this page access to your webcam, if the webcam is busy with another application, try closing such application and reload this page.',
       'OK': '<p>Dear <samp>{{info}}</samp> please upload your picture, you can shot as many time you want, but send just once…</p>',
       'MISSING_TOKEN': 'The <em>token</em> is <strong>missing</strong> in your URL.',
       'EXPIRED_TOKEN': 'The <em>token</em> in your URL is <strong>expired</strong>, contact the service administrator if this should not be the case.',
