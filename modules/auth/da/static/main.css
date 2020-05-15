@@ -5,3 +5,16 @@
 .pure-alert  {
     border-radius: .8em;
 }
+
+.thumbnail{
+  width: 160px;
+  display:block;
+  z-index:999;
+  cursor: pointer;
+  -webkit-transition-property: all;
+  -webkit-transition-duration: 0.3s;
+  -webkit-transition-timing-function: ease;
+}
+.thumbnail:hover {
+    transform: scale(6);
+}

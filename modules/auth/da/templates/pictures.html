@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>{% block title %}∂anake - pictures{% endblock %}</h1>
+
+<table class="pure-table pure-table-bordered">
+  <thead>
+      <tr>
+          <th>UID</th>
+          <th>Info</th>
+          <th>Picture</th>
+      </tr>
+  </thead>
+  <tbody>
+    {% for uid, info, exists in uid2info %}
+      <tr>
+          <td>{{uid}}</td>
+          <td>{{info}}</td>
+          <td>
+            {% if exists %}
+              <img class="pure-thumbnails thumbnail" src="{{url_for('picture', uid = uid)}}"/>
+            {% else %}
+              <img class="pure-thumbnails" src="http://placehold.it/160x120">
+            {% endif %}
+          </td>
+      </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+{% endblock %}
