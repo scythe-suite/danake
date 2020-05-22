@@ -58,7 +58,7 @@ app.config.from_mapping(
                         </li>
                         <li>
                             When your picture is ready to go,
-                            click the send button <i class="icono-signIn">
+                            click the send button <i class="icono-signIn"></i>
                             and wait to be redirected to the exam system.
                         </li>
                     </ol>
