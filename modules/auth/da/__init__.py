@@ -22,15 +22,6 @@ app.config.from_mapping(
                     In this phase you are required to upload a picture of yourself
                     capturing your face along with one of your valid personal IDs
                     (passport, driving license, national ID card).
-                    You can shot as many times as you want,
-                    but you will be allowed to upload just once.<br>
-                    This step is required to allow the exam assistants and the service administrator
-                    to verify your identity.
-                    Your picture will be stored on the server this service is hosted on
-                    only for the amount of time necessary for the identification process.
-                    For privacy compliance,
-                    it will be deleted
-                    by service administrator immediately after that.
                 </p>
                 <p>
                     When you are ready, please
@@ -38,23 +29,17 @@ app.config.from_mapping(
                         <li>Click on the <i class="icono-camera"></i> button.</li>
                         <li>
                             Allow this page to use your camera
-                            by accepting the permission promted you.
+                            by accepting the permission prompted.
                         </li>
                         <li>
                             The box on the left shows the live video from your camera.
                             Strike a pose next to your personal ID,
                             then press the shutter button <i class="icono-camera"></i>.
                             The image captured will be showed in the box on the right.
-                        </li>
-                        <li>
-                            Not satisfied?
-                            Never mind,
-                            you can repeat the previous step as many times as you want
-                            (the exam is starting,
-                            so
-                            hurry up and do not be perfectionist:
-                            if the quality of the picture is too low,
-                            you will be reached by one of the exam assistants).
+                            You can repeat this step as many times as you want
+                            (do not worry
+                            if the quality of the picture is too low:
+                            in such case you will be reached by one of the exam assistants).
                         </li>
                         <li>
                             When your picture is ready to go,
