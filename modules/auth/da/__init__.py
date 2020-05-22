@@ -15,12 +15,59 @@ app.config.from_mapping(
     UID2INFO_PATH = '/uid2info.tsv',
     COOKIE2UID_PATH = '/cookie2uid.map',
     MESSAGES = { # the following are jinja2 templates
-      'CAMERA_ERROR': 'Please allow this page access to your webcam, if the webcam is busy with another application, try closing such application and reload this page.',
-      'OK': '<p>Dear <samp>{{info}}</samp> please upload your picture, you can shot as many time you want, but send just once…</p>',
+      'CAMERA_ERROR': 'Please allow this page to access your webcam, if the camera is busy with another application, try closing such application and reload this page.',
+      'OK': '''
+                <p>Dear <samp>{{info}}</samp>, welcome to the δanake authentication system.</p>
+                <p>
+                    In this phase you are required to upload a picture of yourself
+                    capturing your face along with one of your valid personal IDs
+                    (passport, driving license, national ID card).
+                    You can shot as many times as you want,
+                    but you will be allowed to upload just once.<br>
+                    This step is required to allow the exam assistants and the service administrator
+                    to verify your identity.
+                    Your picture will be stored on the server this service is hosted on
+                    only for the amount of time necessary for the identification process.
+                    For privacy compliance,
+                    it will be deleted
+                    by service administrator immediately after that.
+                </p>
+                <p>
+                    When you are ready, please
+                    <ol>
+                        <li>Click on the <i class="icono-camera"></i> button.</li>
+                        <li>
+                            Allow this page to use your camera
+                            by accepting the permission promted you.
+                        </li>
+                        <li>
+                            The box on the left shows the live video from your camera.
+                            Strike a pose next to your personal ID,
+                            then press the shutter button <i class="icono-camera"></i>.
+                            The image captured will be showed in the box on the right.
+                        </li>
+                        <li>
+                            Not satisfied?
+                            Never mind,
+                            you can repeat the previous step as many times as you want
+                            (the exam is starting,
+                            so
+                            hurry up and do not be perfectionist:
+                            if the quality of the picture is too low,
+                            you will be reached by one of the exam assistants).
+                        </li>
+                        <li>
+                            When your picture is ready to go,
+                            click the send button <i class="icono-signIn">
+                            and wait to be redirected to the exam system.
+                        </li>
+                    </ol>
+                </p>
+            ''',
       'MISSING_TOKEN': 'The <em>token</em> is <strong>missing</strong> in your URL.',
       'EXPIRED_TOKEN': 'The <em>token</em> in your URL is <strong>expired</strong>, contact the service administrator if this should not be the case.',
-      'UNREGISTERED_UID': 'The <em>token</em> in your URL corresponds to an <strong>unregistered</strong> <em>user id </em>, contact the service administrator if this should not be the case.',
-      'INVALID_TOKEN': 'The <em>token</em> in your URL is <strong>invalid</strong>, contact the service administrator this should not be the case.'
+      'UNREGISTERED_UID': 'The <em>token</em> in your URL corresponds to an <strong>unregistered</strong> <em>user id</em>. Should not this be the case, then contact the service administrator.',
+      'INVALID_TOKEN': 'The <em>token</em> in your URL is <strong>invalid</strong>. Should not this be the case, then contact the service administrator.'
     },
     SECRET_KEY = 'dev-only-key',
     COOKIE_DURATION = 60 * 60 * 4, # 4h
