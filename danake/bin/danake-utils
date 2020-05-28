@@ -3,7 +3,7 @@ echo1 "Utils (context: $DANAKE_CONTEXT)"
 subcommand="$1"
 shift || true
 if [ -z "$subcommand" ]; then
-  echo "danake: utils: known subcommands: status, exec, cli, monitor, tokens, pictures, ufw" >&2
+  echo "danake: utils: known subcommands: status, exec, cli, reaper-sign, monitor, tokens, pictures, ufw" >&2
   exit
 fi
 
@@ -65,7 +65,7 @@ case "$subcommand" in
     ;;
 
     pictures)
-      echo2 "Extracting tokens"
+      echo2 "Opening pictures url"
       eval $(grep SECRET_KEY "$DANAKE_CONFS/auth-config.py" | tr -d ' ')
       python -m webbrowser -n "https://$DANAKE_MANAGER_HOST/da/pictures/$SECRET_KEY"
     ;;
@@ -78,6 +78,20 @@ case "$subcommand" in
       shift || true
       eval $(grep SECRET_KEY "$DANAKE_CONFS/mail-config.py" | tr -d ' ')
       curl -H "X-DANAKE-AUTH: $SECRET_KEY" -d "name=$name" -d "mail=$mail" https://$DANAKE_MANAGER_HOST/mm/token
+    ;;
+
+    nuke-volumes)
+      echo2 "About to nuke volumes…"
+      read -p "Confirm (Y/.): " CONFIRM
+      if [ "$CONFIRM" == "Y" ]; then
+        docker volume rm danake_auth_pictures || true
+        docker volume rm danake_router_logs || true
+        for h in $(docker node ls --format '{{.Hostname}}'); do
+          cat "$DANAKE_CONFS/uid2info.tsv" | while read uid info; do
+            docker -H ssh://$h volume rm editor-${uid}-volume || true
+          done
+        done
+      fi
     ;;
 
     ufw)
