@@ -17,6 +17,11 @@ case "$subcommand" in
       docker stack ls
       echo3 "Services"
       docker service ls
+      echo3 "Volumes (on all nodes)"
+      for h in $(docker node ls --format '{{.Hostname}}'); do
+        docker -H ssh://$h volume ls
+      done
+
     ;;
 
     exec)
@@ -53,9 +58,15 @@ case "$subcommand" in
     ;;
 
     monitor)
+      OPEN_URL=$1
+      shift || true
       url="https://$DANAKE_MANAGER_HOST:9000/"
       echo2 "Opening monitor at $url"
-      python -m webbrowser -n "$url"
+      if [ -z "$OPEN_URL" ]; then
+        python -m webbrowser -n "$url"
+      else
+        echo -e "Monitor URL:\n\n\t$url"
+      fi
     ;;
 
     tokens)
@@ -67,7 +78,14 @@ case "$subcommand" in
     pictures)
       echo2 "Opening pictures url"
       eval $(grep SECRET_KEY "$DANAKE_CONFS/auth-config.py" | tr -d ' ')
-      python -m webbrowser -n "https://$DANAKE_MANAGER_HOST/da/pictures/$SECRET_KEY"
+      OPEN_URL=$1
+      shift || true
+      url="https://$DANAKE_MANAGER_HOST/da/pictures/$SECRET_KEY"
+      if [ -z "$OPEN_URL" ]; then
+        python -m webbrowser -n "$url"
+      else
+        echo -e "Pictures URL:\n\n\t$url"
+      fi
     ;;
 
     mail)
@@ -77,7 +95,7 @@ case "$subcommand" in
       export mail=$1
       shift || true
       eval $(grep SECRET_KEY "$DANAKE_CONFS/mail-config.py" | tr -d ' ')
-      curl -H "X-DANAKE-AUTH: $SECRET_KEY" -d "name=$name" -d "mail=$mail" https://$DANAKE_MANAGER_HOST/mm/token
+      curl -sH "X-DANAKE-AUTH: $SECRET_KEY" -d "name=$name" -d "mail=$mail" https://$DANAKE_MANAGER_HOST/mm/token
     ;;
 
     nuke-volumes)

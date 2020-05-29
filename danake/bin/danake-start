@@ -18,6 +18,13 @@ case "$subcommand" in
 
     danake)
       docker stack deploy -c "$DANAKE_HOME/danake.yml" danake
+      echo -n "Wating for the auth app to respond: "
+      while ! curl -sD- -o /dev/null https://$DANAKE_MANAGER_HOST/da/ | grep -q 'HTTP/1.1 200 OK'; do
+        echo -n .
+        sleep 1
+      done
+      echo " done!"
+      echo3 Auth app responding
     ;;
 
     editor)

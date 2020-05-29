@@ -15,7 +15,7 @@ case "$subcommand" in
       for secret in fullchain privkey dhparam auth_config mail_config cookie2uid; do
         docker secret rm danake_${secret} || true
       done
-      rm -f "$DANAKE_CONFS/cookie2uid.tsv"
+      rm -f "$DANAKE_CONFS/cookie2uid.map"
     ;;
 
     create)
