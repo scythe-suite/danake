@@ -17,3 +17,11 @@ else
   export DANAKE_REGISTRY="127.0.0.1:5000"
 fi
 
+if [ "$DANAKE_MANAGER_HOST" = "danake-manager" ]; then
+  export DANAKE_CURL="curl -k"
+  DANAKE_MANAGER_HOST=$(docker-machine ip danake-manager)
+else
+  export DANAKE_CURL="curl"
+fi
+
+

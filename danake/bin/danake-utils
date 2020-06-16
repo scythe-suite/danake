@@ -72,7 +72,7 @@ case "$subcommand" in
     tokens)
       echo2 "Extracting tokens"
       eval $(grep SECRET_KEY "$DANAKE_CONFS/auth-config.py" | tr -d ' ')
-      curl -sH "X-DANAKE-AUTH: $SECRET_KEY" https://$DANAKE_MANAGER_HOST/da/tokens
+      $DANAKE_CURL -sH "X-DANAKE-AUTH: $SECRET_KEY" https://$DANAKE_MANAGER_HOST/da/tokens
     ;;
 
     pictures)
@@ -95,7 +95,7 @@ case "$subcommand" in
       export mail=$1
       shift || true
       eval $(grep SECRET_KEY "$DANAKE_CONFS/mail-config.py" | tr -d ' ')
-      curl -sH "X-DANAKE-AUTH: $SECRET_KEY" -d "name=$name" -d "mail=$mail" https://$DANAKE_MANAGER_HOST/mm/token
+      $DANAKE_CURL -sH "X-DANAKE-AUTH: $SECRET_KEY" -d "name=$name" -d "mail=$mail" https://$DANAKE_MANAGER_HOST/mm/token
     ;;
 
     nuke-volumes)
