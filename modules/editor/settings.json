@@ -4,14 +4,19 @@
   "editor.renderControlCharacters": true,
   "editor.minimap.enabled": false,
   "files.exclude": {
+    "**/.bash*": true,
     "**/.classpath": true,
+    "**/.config": true,
+    "**/.factorypath": true,
+    "**/.local": true,
+    "**/.profile": true,
     "**/.project": true,
     "**/.settings": true,
-    "**/.factorypath": true
-  },
+    "**/.ssh": true,
+    "**/.tooling": true
+   },
   "java.errors.incompleteClasspath.severity": "ignore",
   "java.semanticHighlighting.enabled": true,
-  "telemetry.enableCrashReporter": false,
   "telemetry.enableTelemetry": false,
   "workbench.startupEditor": "none",
   "workbench.colorTheme": "Visual Studio Light"

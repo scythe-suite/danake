@@ -48,13 +48,13 @@ RUN mkdir -p /var/run/sshd && ssh-keygen -A
 RUN echo 'Danake editor instance' > /etc/motd
 
 RUN ARCH="$(dpkg --print-architecture)" && \
-    curl -fsSL "https://github.com/boxboat/fixuid/releases/download/v0.4.1/fixuid-0.4.1-linux-$ARCH.tar.gz" | tar -C /usr/local/bin -xzf - && \
+    curl -fsSL "https://github.com/boxboat/fixuid/releases/download/v0.5/fixuid-0.5-linux-$ARCH.tar.gz" | tar -C /usr/local/bin -xzf - && \
     chown root:root /usr/local/bin/fixuid && \
     chmod 4755 /usr/local/bin/fixuid && \
     mkdir -p /etc/fixuid && \
     printf "user: coder\ngroup: coder\n" > /etc/fixuid/config.yml
 
-RUN cd tmp && curl -sLO https://github.com/cdr/code-server/releases/download/v3.4.1/code-server_3.4.1_amd64.deb
+RUN cd tmp && curl -sLO https://github.com/cdr/code-server/releases/download/v3.8.0/code-server_3.8.0_amd64.deb
 RUN dpkg -i /tmp/code-server*$(dpkg --print-architecture).deb && rm /tmp/code-server*.deb
 
 # Extensions & configs
