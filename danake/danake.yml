@@ -62,7 +62,7 @@ services:
         target: /config.py
 
   portainer:
-    image: portainer/portainer
+    image: portainer/portainer-ce
     depends_on:
       - agent
     command: -H tcp://tasks.agent:9001 --tlsskipverify --ssl --sslcert /run/secrets/fullchain.pem --sslkey /run/secrets/privkey.pem

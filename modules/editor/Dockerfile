@@ -1,4 +1,4 @@
-FROM debian:10
+FROM debian:10.9
 
 ENV DEBIAN_FRONTEND noninteractive
 
@@ -54,7 +54,7 @@ RUN ARCH="$(dpkg --print-architecture)" && \
     mkdir -p /etc/fixuid && \
     printf "user: coder\ngroup: coder\n" > /etc/fixuid/config.yml
 
-RUN cd tmp && curl -sLO https://github.com/cdr/code-server/releases/download/v3.8.0/code-server_3.8.0_amd64.deb
+RUN cd tmp && curl -sLO https://github.com/cdr/code-server/releases/download/v3.10.2/code-server_3.10.2_amd64.deb
 RUN dpkg -i /tmp/code-server*$(dpkg --print-architecture).deb && rm /tmp/code-server*.deb
 
 # Extensions & configs
