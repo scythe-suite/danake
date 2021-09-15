@@ -2,7 +2,6 @@ from csv import reader
 import os
 from pathlib import Path
 
-import click
 from flask import Flask, Response, abort, jsonify, redirect, render_template, request, send_file, make_response
 from jinja2 import contextfilter, Template
 from itsdangerous import BadSignature, SignatureExpired, URLSafeTimedSerializer
@@ -142,6 +141,16 @@ def index(token = None):
             else:
                 status = 'OK'
     if status == 'OK':
+      preauth = PICTURES_FOLDER_PATH / (uid + '.preauth')
+      if preauth.exists():
+        response = make_response(redirect('/cs/'))
+        response.set_cookie(
+          'danake_routing', UID2COOKIE[uid],
+          max_age = app.config["COOKIE_DURATION"],
+          secure = True,
+          samesite = 'Strict'
+        )
+        return response
       dst = PICTURES_FOLDER_PATH / (uid + '.png')
       if dst.exists(): return redirect('/cs/')
       if request.method == 'POST':
