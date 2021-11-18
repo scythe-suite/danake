@@ -65,7 +65,7 @@ services:
     image: portainer/portainer-ce
     depends_on:
       - agent
-    command: -H tcp://tasks.agent:9001 --tlsskipverify --ssl --sslcert /run/secrets/fullchain.pem --sslkey /run/secrets/privkey.pem
+    command: -H tcp://tasks.agent:9001 --tlsskipverify --sslcert /run/secrets/fullchain.pem --sslkey /run/secrets/privkey.pem
     deploy:
       mode: replicated
       replicas: 1
@@ -74,8 +74,8 @@ services:
     ports:
       - target: 8000 # ssh tunnel
         published: 8000
-      - target: 9000
-        published: 9000
+      - target: 9443
+        published: 9443
     volumes:
       - type: volume
         source: portainer

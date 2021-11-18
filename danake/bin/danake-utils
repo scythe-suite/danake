@@ -60,7 +60,7 @@ case "$subcommand" in
     monitor)
       OPEN_URL=$1
       shift || true
-      url="https://$DANAKE_MANAGER_HOST:9000/"
+      url="https://$DANAKE_MANAGER_HOST:9443/"
       echo2 "Opening monitor at $url"
       if [ -z "$OPEN_URL" ]; then
         python -m webbrowser -n "$url"
