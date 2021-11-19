@@ -43,15 +43,22 @@ case "$subcommand" in
     ;;
 
     reaper-sign)
+      export REAPER_TESTER=$1
+      shift || true
+      if [ -z "$REAPER_TESTER" ]; then
+        echo Please specify tester >&2
+        exit 1
+      fi
       export REAPER_SESSION=$1
       shift || true
       if [ -z "$REAPER_SESSION" ]; then
         echo Please specify session >&2
         exit 1
       fi
-      echo2 Performing reaper sign for $REAPER_SESSION
+      echo2 Performing reaper sign for $REAPER_TESTER/$REAPER_SESSION
       cat "$DANAKE_CONFS/uid2info.tsv" | \
         docker run -i --rm \
+          --env REAPER_TESTER \
           --env REAPER_SESSION \
           --network danake_editor_network \
           $DANAKE_REGISTRY/cli:$DANAKE_VERSION reaper-sign
