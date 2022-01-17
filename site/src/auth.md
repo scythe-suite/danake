@@ -1,18 +1,18 @@
 # The Authentication Flow
 
 The goal of the authentication in the context of the ∂anake component is to link
-a student (identified by her email and a picture of her face, taken beside a
-photo ID) to an instance of the development environment she will use for the
-course of the exam; the purpose of the flow is to make as difficult as possible
-for every other student to connect to the same development environment, once the
-link is established.
+a student (identified by her email and possibly a picture of her face, taken
+beside a photo ID) to an instance of the development environment she will use
+for the course of the exam; the purpose of the flow is to make as difficult as
+possible for every other student to connect to the same development environment,
+once the link is established.
 
 The first actor in the flow is the **router**, it intercepts HTTP requests from
 the **student** and routes them according to various parameters to the
-**authentication application** (that collects student pictures) or to one of the
-instances of the **editor**. All these components live in a Docker *swarm* and
-networking among them is segregated from the Internet, the swarm has a single
-**entry point** (that is a URL).
+**authentication application** (that possibly collects student pictures) or to
+one of the instances of the **editor**. All these components live in a Docker
+*swarm* and networking among them is segregated from the Internet, the swarm has
+a single **entry point** (that is a URL).
 
 The **router** (sitting at the *entry point*) rules are:
 
@@ -38,15 +38,22 @@ The **authentication application** performs the following steps:
       instance);
     * if the student has already provided her picture, the application sends a
       redirect to the *editor* instance;
-* if the request method is `GET`, the application sends a form requesting the
-  student picture;
+* if the request method is `GET`:
+    * if the student has been *pre-authorized*, it creates an empty picture
+      placeholder and redirects her to the *editor* instance; else
+    * the application sends a form requesting the student picture;
 * if the request method is `POST` and the request contains a non-empty picture,
   the application tries to store atomically the picture. If it succeeds, it
   determines the *routing cookie* and sets it; in any case, it sends a redirect
   to itself.
 
+The point of the pre-authorization is to let students take the exam in a class
+where there are no webcams available, but the teacher can ascertain their
+identities in some alternative way.
+
 The above process (if every steps is preformed in a valid way) can be
-represented by the following diagram.
+represented by the following diagram (where the part about photos is absent in
+case of pre-authorization).
 
 <div class="mermaid">
 sequenceDiagram
