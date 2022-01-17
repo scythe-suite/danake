@@ -141,37 +141,44 @@ def index(token = None):
             else:
                 status = 'OK'
     if status == 'OK':
-      preauth = PICTURES_FOLDER_PATH / (uid + '.preauth')
-      if preauth.exists():
-        response = make_response(redirect('/cs/'))
-        response.set_cookie(
-          'danake_routing', UID2COOKIE[uid],
-          max_age = app.config["COOKIE_DURATION"],
-          secure = True,
-          samesite = 'Strict'
-        )
-        return response
-      dst = PICTURES_FOLDER_PATH / (uid + '.png')
-      if dst.exists(): return redirect('/cs/')
-      if request.method == 'POST':
-          if 'photo' not in request.files: abort(400)
-          file = request.files['photo']
-          try:
-              fd = os.open(str(dst), os.O_CREAT | os.O_EXCL | os.O_WRONLY, 0o600)
-          except OSError as e:
-              if e.errno == os.EEXIST:
-                  return redirect('/cs/')
-              else:
-                  raise
-          fobj = os.fdopen(fd, 'wb')
-          try:
-              file.save(fobj)
-              fobj.close()
-          except OSError:
-              abort(500)
-          return jsonify({
-            'status': 'ok',
-            'cookie': f'danake_routing={UID2COOKIE[uid]}; Max-Age={app.config["COOKIE_DURATION"]}; Path=/; Secure; SameSite=Strict' })
+        dst = PICTURES_FOLDER_PATH / (uid + '.png')
+        if dst.exists(): return redirect('/cs/')
+        preauth = PICTURES_FOLDER_PATH / (uid + '.preauth')
+        if preauth.exists():
+            try:
+                fd = os.open(str(dst), os.O_CREAT | os.O_EXCL | os.O_WRONLY, 0o600)
+            except OSError as e:
+                if e.errno == os.EEXIST:
+                    return redirect('/cs/')
+                else:
+                    raise
+            response = make_response(redirect('/cs/'))
+            response.set_cookie(
+              'danake_routing', UID2COOKIE[uid],
+              max_age = app.config["COOKIE_DURATION"],
+              secure = True,
+              samesite = 'Strict'
+            )
+            return response
+        if request.method == 'POST':
+            if 'photo' not in request.files: abort(400)
+            file = request.files['photo']
+            try:
+                fd = os.open(str(dst), os.O_CREAT | os.O_EXCL | os.O_WRONLY, 0o600)
+            except OSError as e:
+                if e.errno == os.EEXIST:
+                    return redirect('/cs/')
+                else:
+                    raise
+            fobj = os.fdopen(fd, 'wb')
+            try:
+                file.save(fobj)
+                fobj.close()
+            except OSError:
+                abort(500)
+            return jsonify({
+              'status': 'ok',
+              'cookie': f'danake_routing={UID2COOKIE[uid]}; Max-Age={app.config["COOKIE_DURATION"]}; Path=/; Secure; SameSite=Strict' })
     return render_template('index.html', status = status, info = info, messages = app.config['MESSAGES'])
 
 
