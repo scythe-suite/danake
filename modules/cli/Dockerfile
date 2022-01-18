@@ -1,4 +1,4 @@
-FROM debian:10.9
+FROM debian:11
 LABEL maintainer="Massimo Santini santini@di.unimi.it"
 
 ENV DEBIAN_FRONTEND noninteractive

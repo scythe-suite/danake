@@ -1,6 +1,0 @@
-redhat.java
-vscjava.vscode-java-debug
-vscjava.vscode-java-test
-vscjava.vscode-maven
-vscjava.vscode-java-dependency
-tht13.html-preview-vscode

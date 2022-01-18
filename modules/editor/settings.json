@@ -13,8 +13,15 @@
     "**/.project": true,
     "**/.settings": true,
     "**/.ssh": true,
-    "**/.tooling": true
+    "**/.tooling": true,
+    "**/.vscode-remote": true,
+    "**/.cache": true
    },
+  "files.watcherExclude": {
+    "**/.local": true,
+    "**/.vscode-remote": true,
+    "**/.cache": true
+  },
   "java.errors.incompleteClasspath.severity": "ignore",
   "java.semanticHighlighting.enabled": true,
   "telemetry.enableTelemetry": false,

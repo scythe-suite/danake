@@ -30,8 +30,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     python3-pylint-common \
     python3-setuptools \
     python3-wheel \
-    default-jdk-headless \
-    default-jre-headless \
+    openjdk-17-jdk-headless \
+    openjdk-17-jre-headless \
     gradle \
     maven \
     && rm -rf /var/lib/apt/lists/*
@@ -41,12 +41,14 @@ RUN sed -i "s/# it_IT.UTF-8/it_IT.UTF-8/" /etc/locale.gen \
   && locale-gen
 ENV LANG=it_IT.UTF-8
 
+# shell
 RUN chsh -s /bin/bash
 
-# ssh
+# ssh-server
 RUN mkdir -p /var/run/sshd && ssh-keygen -A
 RUN echo 'Danake editor instance' > /etc/motd
 
+# fixuid
 RUN ARCH="$(dpkg --print-architecture)" && \
     curl -fsSL "https://github.com/boxboat/fixuid/releases/download/v0.5/fixuid-0.5-linux-$ARCH.tar.gz" | tar -C /usr/local/bin -xzf - && \
     chown root:root /usr/local/bin/fixuid && \
@@ -54,28 +56,31 @@ RUN ARCH="$(dpkg --print-architecture)" && \
     mkdir -p /etc/fixuid && \
     printf "user: coder\ngroup: coder\n" > /etc/fixuid/config.yml
 
-RUN cd tmp && curl -sLO https://github.com/cdr/code-server/releases/download/v3.12.0/code-server_3.12.0_amd64.deb
-RUN dpkg -i /tmp/code-server*$(dpkg --print-architecture).deb && rm /tmp/code-server*.deb
+# code-server
+ENV CODE_SERVER_VERSION=3.12.0
+RUN cd tmp && curl -sLO https://github.com/coder/code-server/releases/download/v${CODE_SERVER_VERSION}/code-server_${CODE_SERVER_VERSION}_amd64.deb
+RUN dpkg -i /tmp/code-server*.deb && rm /tmp/code-server*.deb
 
-# Extensions & configs
+# extensions & configs
 RUN adduser --gecos '' --disabled-password coder && \
   echo "coder ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers.d/nopasswd
 USER coder
 ENV PATH "${PATH}:/home/coder/bin"
 ENV SHELL /bin/bash
-ENV VSCODE_USER "/home/coder/.local/share/code-server/User"
 ENV VSCODE_EXTENSIONS "/home/coder/.local/share/code-server/extensions"
-RUN mkdir -p ${VSCODE_USER}
+RUN rm -rf ${VSCODE_EXTENSIONS} && mkdir -p ${VSCODE_EXTENSIONS}
+RUN bash -c 'for e in redhat.java vscjava.vscode-java-pack; do code-server --install-extension $e; done'
+ENV VSCODE_USER "/home/coder/.local/share/code-server/User"
+RUN rm -rf ${VSCODE_USER} && mkdir -p ${VSCODE_USER}
 COPY --chown=coder:coder settings.json /home/coder/.local/share/code-server/User/
-COPY --chown=coder:coder extensions.txt /tmp
-RUN bash -c 'for e in $(cat /tmp/extensions.txt); do  code-server --install-extension $e; done' && rm -f /tmp/extensions.txt
 
-# ssh
+# ssh key
 ARG authorized_keys
 RUN mkdir -p /home/coder/.ssh/ && \
     echo ${authorized_keys} > /home/coder/.ssh/authorized_keys && \
     chmod go= -R /home/coder/.ssh
 
+# go!
 EXPOSE 8080
 WORKDIR /home/coder
 CMD ["bash", "-c", "/usr/bin/sudo /usr/sbin/sshd && exec code-server --disable-telemetry --bind-addr 0.0.0.0:8080 --auth none /home/coder"]
