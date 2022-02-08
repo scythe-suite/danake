@@ -1,8 +1,8 @@
 from csv import reader
 from itertools import cycle
 from os import environ
-from secrets import token_urlsafe
 from sys import stdin
+from time import sleep
 
 import docker
 
@@ -29,3 +29,4 @@ for uid, host in list(zip(UIDS, cycle(HOSTS))):
         networks = ['danake_editor_network'],
         labels = {'danake_role': 'editor', 'danake_host': host}
     )
+    sleep(2)
