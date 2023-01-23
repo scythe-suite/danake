@@ -50,14 +50,14 @@ RUN echo 'Danake editor instance' > /etc/motd
 
 # fixuid
 RUN ARCH="$(dpkg --print-architecture)" && \
-    curl -fsSL "https://github.com/boxboat/fixuid/releases/download/v0.5/fixuid-0.5-linux-$ARCH.tar.gz" | tar -C /usr/local/bin -xzf - && \
+    curl -fsSL "https://github.com/boxboat/fixuid/releases/download/v0.5.1/fixuid-0.5.1-linux-$ARCH.tar.gz" | tar -C /usr/local/bin -xzf - && \
     chown root:root /usr/local/bin/fixuid && \
     chmod 4755 /usr/local/bin/fixuid && \
     mkdir -p /etc/fixuid && \
     printf "user: coder\ngroup: coder\n" > /etc/fixuid/config.yml
 
 # code-server
-ENV CODE_SERVER_VERSION=3.12.0
+ENV CODE_SERVER_VERSION=4.7.1
 RUN cd tmp && curl -sLO https://github.com/coder/code-server/releases/download/v${CODE_SERVER_VERSION}/code-server_${CODE_SERVER_VERSION}_amd64.deb
 RUN dpkg -i /tmp/code-server*.deb && rm /tmp/code-server*.deb
 

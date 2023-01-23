@@ -1,6 +1,5 @@
-from csv import reader, Sniffer
+from csv import reader
 from os import environ
-from pathlib import Path
 import re
 
 import click

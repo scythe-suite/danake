@@ -3,7 +3,7 @@ import os
 from pathlib import Path
 
 from flask import Flask, Response, abort, jsonify, redirect, render_template, request, send_file, make_response
-from jinja2 import contextfilter, Template
+from jinja2 import pass_context, Template
 from itsdangerous import BadSignature, SignatureExpired, URLSafeTimedSerializer
 from markupsafe import Markup
 
@@ -60,7 +60,7 @@ app.config.from_mapping(
 app.config.from_pyfile('config.py', silent = True)
 app.config.from_pyfile('/config.py', silent = True)
 
-@contextfilter
+@pass_context
 def render_message(context, value):
     return Markup(Template(value).render(context))
 app.jinja_env.filters['render_message'] = render_message
